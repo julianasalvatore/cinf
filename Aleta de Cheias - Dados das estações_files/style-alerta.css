@@ -1,0 +1,103 @@
+body {    
+	padding: 0;    
+	margin: 0; 
+}
+
+html, body, .container, .main_container, .post{
+	height: 100%;
+}
+
+.x_title{
+	color:#000;
+	word-wrap: break-word;
+}
+.x_title h2 {
+word-wrap: break-word;
+	overflow: visible;
+	font-size:20px;
+}
+
+#lbl_titulo{	word-wrap: break-word;	}
+.x_panel{
+	min-height: 800px!important;
+	border:0px solid transparent;
+}
+.info {
+	width:100%;
+	padding: 6px 8px;
+	font: 14px/16px Arial, Helvetica, sans-serif;
+	background: white;
+	background: rgba(255,255,255,0.8);
+	box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+#map{
+	height: 700px;
+	border:1px solid black;
+}
+
+#redes-sociais{
+	background:#FFF;
+	width: 110px;
+	float:right;
+	margin: 1%; 
+	text-align: center;
+}
+
+#tabLegenda td{	padding-bottom:5px;	}
+
+#redes-sociais i{	font-size: 28px;	}
+ 
+		
+#titulo{
+	font: 200% Helvetica, sans-serif;
+	color: white;
+	letter-spacing: 2px;
+}
+
+.redes {
+	margin-left:3%;
+	font-size:28px;
+	color:rgb(26,187,156);
+}
+
+.navbar-inverse {
+     background-color: #2a3f54;
+     border-color: #080808;
+} 
+
+.navbar-header {
+	background: #f8f8f8!important;
+}
+
+.navbar-brand, .navbar-nav>li>a {
+	font-weight: 500;
+	color: #2a3f54!important;
+	margin-bottom: 0 !important;
+	font-size:16px;
+}
+.navbar {
+	padding-bottom: 0px !important;
+	margin-bottom: 0px !important;
+	border: 1px solid transparent !important;
+	width:100%!important;
+}
+.navbar-default {
+	background-color: #fff;
+	padding-bottom: 0px !important;
+	margin-bottom: 0px !important;
+	border: 1px solid transparent !important;
+	border-radius: 0px 0px 0px 0px;
+	width:100%!important;
+
+}
+.navbar-header {
+	float: left;
+	background:rgb(0,0,0,0) !important;
+}
+.menu_li{
+	border-bottom:1px solid #e8e8e8;
+}
+.menu_li:hover{
+	background:#F3F3F3!important;
+}
