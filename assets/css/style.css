@@ -70,7 +70,7 @@ h1, h2, h3, h4, h5, h6 {
 
   .table {
     border-bottom: #99999900 solid 1px;
-    width: 100%;
+    width: 130%;
     margin-bottom: 20px;
   }
 
@@ -222,6 +222,7 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(21, 34, 43, 0.85);
   padding: 12px 0;
 }
+
 
 #header .logo {
   font-size: 32px;
