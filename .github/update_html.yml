@@ -1,37 +1,112 @@
-name: Update HTML
+import requests
+from bs4 import BeautifulSoup
+from deep_translator import GoogleTranslator
+from datetime import datetime, timedelta
+import pytz
+import re
 
-on:
-  push:
-    branches:
-      - main  # ou a branch principal do seu repositório
+# Função para conversão de Fahrenheit para Celsius
+def fahrenheit_para_celsius(f):
+    return (f - 32) * 5 / 9
 
-jobs:
-  update:
-    runs-on: ubuntu-latest
+# Função para capturar a hora atual
+def obter_hora_atual():
+    timezone_br = pytz.timezone('America/Sao_Paulo')
+    hora_atual = datetime.now(timezone_br).strftime('%H:%M')
+    return hora_atual
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+# Função para ajustar a hora para o horário de Brasília
+def ajustar_hora_brasilia(hora_gmt_str, segundos_atualizacao):
+    hora_gmt = datetime.strptime(hora_gmt_str, '%I:%M %p')
+    gmt_timezone = pytz.timezone('GMT')
+    brasilia_timezone = pytz.timezone('America/Sao_Paulo')
+    hora_gmt = gmt_timezone.localize(hora_gmt)
+    hora_brasilia = hora_gmt.astimezone(brasilia_timezone)
+    hora_brasilia_atualizada = hora_brasilia - timedelta(seconds=segundos_atualizacao)
+    return hora_brasilia_atualizada
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'  # ou a versão do Python que você usa
+# Função para extrair dados climáticos da URL
+def obter_dados_climaticos(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    translator = GoogleTranslator(source='en', target='pt')
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 deep_translator
+    dados_climaticos = {}
 
-      - name: Run script to update HTML
-        run: python atualizar_html.py
+    # Temperatura Atual
+    temp_div = soup.find('lib-display-unit', {'type': 'temperature'})
+    if temp_div:
+        temp_f = float(temp_div.find('span', class_='wu-value-to').text.strip())
+        temp_c = fahrenheit_para_celsius(temp_f)
+        dados_climaticos['Temperatura Atual'] = f"{temp_c:.1f}°C"
+    else:
+        dados_climaticos['Temperatura Atual'] = "Não disponível"
 
-      - name: Commit and push changes
-        run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
-          git add 0_est_mey.html
-          git commit -m 'Atualizar HTML'
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # Estado do Tempo
+    condition_div = soup.find('div', class_='condition-icon')
+    if condition_div:
+        estado_tempo = condition_div.find('p').text.strip()
+        estado_tempo_pt = translator.translate(estado_tempo)
+        dados_climaticos['Estado do Tempo'] = estado_tempo_pt
+    else:
+        dados_climaticos['Estado do Tempo'] = "Não disponível"
+
+    # Vento
+    wind_div = soup.find('div', class_='condition-wind')
+    if wind_div:
+        wind_speed = wind_div.find('header', class_='wind-speed').text.strip()
+        gusts_div = wind_div.find('p')
+        if gusts_div:
+            wind_gusts = gusts_div.find('lib-display-unit').find('span', class_='wu-value-to').text.strip()
+            dados_climaticos['Vento'] = f"{wind_speed} km/h"
+            dados_climaticos['Rajadas'] = f"{wind_gusts} km/h"
+        else:
+            dados_climaticos['Vento'] = "Não disponível"
+            dados_climaticos['Rajadas'] = "Não disponível"
+    else:
+        dados_climaticos['Vento'] = "Não disponível"
+        dados_climaticos['Rajadas'] = "Não disponível"
+
+    # Hora Atual e Atualização
+    timestamp_div = soup.find('p', class_='timestamp')
+    if timestamp_div:
+        hora_atual_match = re.search(r'(\d{1,2}:\d{2} [APM]{2}) GMT-03:00', timestamp_div.text)
+        atualizacao_match = re.search(r'Atualizado há (\d+) segundos', timestamp_div.text)
+
+        if hora_atual_match and atualizacao_match:
+            hora_atual_str = hora_atual_match.group(1)
+            segundos_atualizacao = int(atualizacao_match.group(1))
+            hora_brasilia_atualizada = ajustar_hora_brasilia(hora_atual_str, segundos_atualizacao)
+            dados_climaticos['Hora Atual'] = hora_brasilia_atualizada.strftime('%H:%M')
+        else:
+            dados_climaticos['Hora Atual'] = obter_hora_atual()
+
+    return dados_climaticos
+
+# Função para atualizar o arquivo HTML
+def atualizar_html(dados_climaticos, caminho_arquivo_html):
+    with open(caminho_arquivo_html, 'r') as file:
+        conteudo = file.read()
+
+    # Substitua as tags específicas no HTML pelos dados atualizados
+    conteudo = re.sub(r'<!-- Temperatura -->.*?<!-- /Temperatura -->',
+                      f'<!-- Temperatura -->{dados_climaticos["Temperatura Atual"]}<!-- /Temperatura -->', conteudo)
+    conteudo = re.sub(r'<!-- Estado do Tempo -->.*?<!-- /Estado do Tempo -->',
+                      f'<!-- Estado do Tempo -->{dados_climaticos["Estado do Tempo"]}<!-- /Estado do Tempo -->', conteudo)
+    conteudo = re.sub(r'<!-- Vento -->.*?<!-- /Vento -->',
+                      f'<!-- Vento -->{dados_climaticos["Vento"]}<!-- /Vento -->', conteudo)
+    conteudo = re.sub(r'<!-- Hora Atual -->.*?<!-- /Hora Atual -->',
+                      f'<!-- Hora Atual -->{dados_climaticos["Hora Atual"]}<!-- /Hora Atual -->', conteudo)
+
+    with open(caminho_arquivo_html, 'w') as file:
+        file.write(conteudo)
+
+# URL da estação meteorológica
+url_conego = 'https://www.wunderground.com/weather/br/nova-friburgo/INOVAF28'
+
+# Caminho para o arquivo HTML
+caminho_arquivo_html = '0_est_mey.html'
+
+# Atualizando o HTML com os dados climáticos
+dados_climaticos_conego = obter_dados_climaticos(url_conego)
+atualizar_html(dados_climaticos_conego, caminho_arquivo_html)

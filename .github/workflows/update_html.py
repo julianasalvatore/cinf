@@ -1,19 +1,35 @@
-import requests
-from bs4 import BeautifulSoup
+name: Atualizar HTML
 
-# Supondo que você já tem funções para obter os dados climáticos
-def obter_dados_climaticos():
-    # Seu código para obter e processar dados climáticos
-    pass
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # Executa a cada 10 minutos
+  workflow_dispatch:
 
-# Atualizar o arquivo HTML
-def atualizar_html():
-    dados_climaticos = obter_dados_climaticos()
-    with open('0_est_mey.html', 'w') as file:
-        file.write('<html><body>\n')
-        for chave, valor in dados_climaticos.items():
-            file.write(f'<p><strong>{chave}</strong>: {valor}</p>\n')
-        file.write('</body></html>\n')
+jobs:
+  update_html:
+    runs-on: ubuntu-latest
 
-if __name__ == "__main__":
-    atualizar_html()
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v2
+
+    - name: Configurar Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Instalar dependências
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests beautifulsoup4 deep-translator pytz
+
+    - name: Executar script de atualização do HTML
+      run: python atualizar_html.py
+
+    - name: Commit das mudanças
+      run: |
+        git config --local user.email "you@example.com"
+        git config --local user.name "GitHub Actions"
+        git add 0_est_mey.html
+        git commit -m "Atualização automática do HTML com dados meteorológicos"
+        git push
