@@ -136,32 +136,41 @@
 
   <main id="main">
 
-    <!-- ======= Breadcrumbs ======= -->
-    <section class="breadcrumbs">
-      <div class="container">
+    <!-- ======= Breadcrumbs ======= -
+     >
+<section class="breadcrumbs">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2>Navegue abaixo para acompanhamento das informações emitidas pelo sistema de ALERTAS CEMADEN - RJ</h2>
+    </div>
+  </div>
+</section-->
 
-        <div class="d-flex left-content-between align-items-center">
-          <h2>Navegue abaixo para acompanhamento das informações emitidas pelo sistema de ALERTAS CEMADEN - RJ</h2>
-          
-          <!--ol>
-            <li><a href="index.html">Home</a></li>
-            <li>Inner Page</li>
-          </ol-->
-        </div>
+<section class="inner-page" style="height: 1080px; overflow: hidden;">
+  <div 
+    class="container-fluid" 
+    style="
+      display: flex; 
+      gap: 10px; 
+      height: 100%; 
+      overflow-x: hidden; 
+      overflow-y: auto; 
+      flex-wrap: wrap;
+    "
+  >
+    <iframe 
+      src="https://painelcemadenrj.defesacivil.rj.gov.br/monitoramento/v2/mapa/" 
+      style="flex: 1 1 50%; min-height: 500px; border: none;" 
+      scrolling="auto" 
+      frameborder="0"
+    >Esta opção não irá funcionar corretamente. Infelizmente, seu navegador não suporta frames.</iframe>
 
-      </div>
-    </section><!-- End Breadcrumbs -->
-
-    <section class="inner-page">
-      <div class="container">
-        <iframe id="blockrandom" name="iframe" src="https://painelcemadenrj.defesacivil.rj.gov.br/monitoramento/v2/mapa/" width="100%" height="880" scrolling="auto" frameborder="0" class="wrapper">
-          Esta opção não irá funcionar corretamente. Infelizmente, seu navegador não suporta frames.</iframe>
+    <!--iframe id="blockrandom" name="iframe" src="https://painelcemadenrj.defesacivil.rj.gov.br/monitoramento/v2/mapa/" width="100%" height="880" scrolling="auto" frameborder="0" class="wrapper">
+          Esta opção não irá funcionar corretamente. Infelizmente, seu navegador não suporta frames.</iframe-->
   
-      </div>
-
-    </section>
-
-  </main><!-- End #main -->
+  </div>
+</section>
+<!-- End #main -->
 
  
   
