@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mapa Interativo - Friburgo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #mapa {
+      height: 100vh;
+      width: 100%;
+    }
+    #menu {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 999;
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div id="menu">
+    <label for="tipoBusca">Buscar por:</label>
+    <select id="tipoBusca">
+      <option value="apoio">Ponto de apoio</option>
+      <option value="camera">Câmera ao vivo</option>
+    </select>
+    <button onclick="buscarMaisProximo()">Buscar mais próximo</button>
+  </div>
+
+  <div id="mapa"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const mapa = L.map('mapa').setView([-22.2816, -42.5310], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(mapa);
+
+    // Pontos de apoio
+    const pontosDeApoio = [
+      { nome: "Ginásio Poliesportivo", coord: [-22.2843, -42.5357] },
+      { nome: "UPA Conselheiro", coord: [-22.2620, -42.5332] }
+    ];
+
+    // Câmeras
+    const cameras = [
+      { nome: "Av. Rui Barbosa", coord: [-22.270881, -42.533057], link: "https://player.twitch.tv/?channel=rbmseg&amp;parent=nfci.pmnf.rj.gov.br" }
+    ];
+
+    // Ícone personalizado (imagem de câmera) para ponto de apoio
+    const iconeCamera = L.icon({
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -30]
+    });
+
+    // Ícone padrão do Leaflet para câmera
+    const iconePadrao = L.icon({
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      shadowSize: [41, 41]
+    });
+
+    // Adiciona marcadores
+    // Pontos de apoio com ícone de câmera
+    pontosDeApoio.forEach(p => {
+      L.marker(p.coord, { icon: iconeCamera }).addTo(mapa)
+        .bindPopup(`<strong>${p.nome}</strong><br>Ponto de apoio`);
+    });
+
+    // Câmeras com ícone padrão
+    cameras.forEach(cam => {
+      L.marker(cam.coord, { icon: iconePadrao }).addTo(mapa)
+        .bindPopup(`<strong>${cam.nome}</strong><br><a href="${cam.link}" target="_blank">Ver câmera</a>`);
+    });
+
+    // Função para calcular distância
+    function distancia(coord1, coord2) {
+      const [lat1, lon1] = coord1;
+      const [lat2, lon2] = coord2;
+      const rad = Math.PI / 180;
+      const dLat = (lat2 - lat1) * rad;
+      const dLon = (lon2 - lon1) * rad;
+      const a = Math.sin(dLat/2)**2 + Math.cos(lat1*rad) * Math.cos(lat2*rad) * Math.sin(dLon/2)**2;
+      return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); // km
+    }
+
+    function buscarMaisProximo() {
+      if (!navigator.geolocation) {
+        alert("Geolocalização não suportada.");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(pos => {
+        const userCoord = [pos.coords.latitude, pos.coords.longitude];
+        const tipo = document.getElementById('tipoBusca').value;
+        let lista = tipo === "apoio" ? pontosDeApoio : cameras;
+
+        let maisProximo = null;
+        let menorDistancia = Infinity;
+
+        lista.forEach(p => {
+          const d = distancia(userCoord, p.coord);
+          if (d < menorDistancia) {
+            menorDistancia = d;
+            maisProximo = p;
+          }
+        });
+
+        if (maisProximo) {
+          mapa.setView(maisProximo.coord, 15);
+          L.popup()
+            .setLatLng(maisProximo.coord)
+            .setContent(`
+              <strong>${maisProximo.nome}</strong><br>
+              ${tipo === "camera" ? `<a href="${maisProximo.link}" target="_blank">Ver câmera</a><br>` : ""}
+              <a href="https://www.google.com/maps/dir/?api=1&destination=${maisProximo.coord[0]},${maisProximo.coord[1]}" target="_blank">
+                Traçar rota no Google Maps
+              </a>
+            `)
+            .openOn(mapa);
+        }
+      }, err => {
+        alert("Não foi possível obter sua localização.");
+      });
+    }
+  </script>
+</body>
+</html>

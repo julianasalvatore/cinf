@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mapa Interativo - Nova Friburgo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #mapa {
+      height: 100vh;
+      width: 100%;
+    }
+    .search-box {
+      position: absolute;
+      top: 90px;
+      left: 20px;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="search-box">
+    <label for="tipoBusca">Buscar por:</label>
+    <select id="tipoBusca">
+      <option value="camera">Câmera ao vivo</option>
+      <option value="apoio">Ponto de apoio</option>
+    </select><br>
+    <label for="raioBusca">Raio (km):</label>
+    <input type="number" id="raioBusca" value="2" min="1" max="50" /><br>
+    <button onclick="buscarProximos()">Buscar</button>
+  </div>
+
+  <div id="mapa"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const mapa = L.map("mapa").setView([-22.285, -42.531], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap",
+    }).addTo(mapa);
+
+    const apiKey = "1406a60c8d59eca8d3b007e2e83df790"; // OpenWeatherMap
+
+    // Camadas climáticas
+    const nuvens = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+    const chuva = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+    const vento = L.tileLayer(`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+
+    const camadas = {
+      "Nuvens": nuvens,
+      "Chuva": chuva,
+      "Vento": vento,
+    };
+
+    L.control.layers(null, camadas).addTo(mapa);
+
+    // Ícones personalizados
+    const iconeCamera = L.icon({
+      iconUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiAN64dFWlAbes6GL9FXhIYCoot9F7S8LXmAoh8x0SORG28ZMrp396RDK4pfbDth0eq7Q&usqp=CAU",
+      //iconUrl: "https://cdn-icons-png.flaticon.com/512/139/139787.png",  
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32]
+    });
+
+    const iconeApoio = L.icon({
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+      //iconUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7wxRFJiml-dHAfPP-0OOtBx0S_8-YBKhZAg&s",
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32]
+    });
+
+    // Dados das câmeras
+    const cameras = [
+      {
+        nome: "Av. Rui Barbosa",
+        coord: [-22.270881, -42.533057],
+        link: "https://player.twitch.tv/?channel=rbmseg&parent=nfci.pmnf.rj.gov.br"
+      },
+      {
+        nome: "Duas Pedras - Av. Gov. Roberto Silveira",
+        coord: [-22.258614, -42.530943],
+        link: "https://player.twitch.tv/?channel=rbmseg2pedras&amp;parent=nfci.pmnf.rj.gov.br"
+      }
+    ];
+
+    // Dados dos pontos de apoio
+    const pontosApoio = [
+      { nome: "Praça Dermeval Barbosa Moreira", coord: [-22.2875, -42.5319] },
+      { nome: "Escola Municipal Lafayette Bravo Filho", coord: [-22.2725, -42.5268] }
+    ];
+
+    // Função para adicionar marcadores com ícones diferentes
+    function addMarcadores(lista, tipo) {
+      lista.forEach(item => {
+        const marcador = L.marker(item.coord, {
+          icon: tipo === "camera" ? iconeCamera : iconeApoio
+        }).addTo(mapa);
+
+        if (tipo === "camera") {
+          marcador.bindPopup(`
+            <strong>${item.nome}</strong><br>
+            <a href="${item.link}" target="_blank">Ver câmera</a>
+          `);
+        } else {
+          marcador.bindPopup(`
+            <strong>${item.nome}</strong><br>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${item.coord[0]},${item.coord[1]}" target="_blank">Ver rota</a>
+          `);
+        }
+      });
+    }
+
+    // Adiciona todos os marcadores ao carregar a página
+    addMarcadores(cameras, "camera");
+    addMarcadores(pontosApoio, "apoio");
+
+    // Calcula distância entre coordenadas (em km)
+    function calcularDistancia(coord1, coord2) {
+      const R = 6371;
+      const dLat = (coord2[0] - coord1[0]) * Math.PI / 180;
+      const dLon = (coord2[1] - coord1[1]) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) ** 2 +
+                Math.cos(coord1[0] * Math.PI / 180) *
+                Math.cos(coord2[0] * Math.PI / 180) *
+                Math.sin(dLon / 2) ** 2;
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+    }
+
+    // Busca pontos próximos dentro do raio informado
+    function buscarProximos() {
+      const tipo = document.getElementById("tipoBusca").value;
+      const raio = parseFloat(document.getElementById("raioBusca").value);
+      const userLoc = mapa.getCenter();
+      const origem = [userLoc.lat, userLoc.lng];
+      let lista = tipo === "camera" ? cameras : pontosApoio;
+
+      let encontrados = lista.filter(item => calcularDistancia(origem, item.coord) <= raio);
+
+      if (encontrados.length === 0) {
+        alert("Nenhum ponto encontrado nesse raio.");
+        return;
+      }
+
+      const grupo = L.layerGroup();
+
+      encontrados.forEach(item => {
+        const marcador = L.marker(item.coord, {
+          icon: tipo === "camera" ? iconeCamera : iconeApoio
+        }).addTo(grupo);
+
+        if (tipo === "camera") {
+          marcador.bindPopup(`<strong>${item.nome}</strong><br><a href="${item.link}" target="_blank">Ver câmera</a>`);
+        } else {
+          marcador.bindPopup(`<strong>${item.nome}</strong><br><a href="https://www.google.com/maps/dir/?api=1&destination=${item.coord[0]},${item.coord[1]}" target="_blank">Ver rota</a>`);
+        }
+      });
+
+      grupo.addTo(mapa);
+      mapa.fitBounds(grupo.getBounds());
+    }
+  </script>
+</body>
+</html>
