@@ -12,6 +12,15 @@
   <!-- Favicons -->
   <link href="assets/img/favicon2.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <!-- Favicon padrão na raiz -->
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+<!-- PNG fallback -->
+<link rel="icon" type="image/png" href="assets/img/favicon2.png">
+
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -139,88 +148,119 @@
 
   <main id="main">
 
-    <!-- ======= Breadcrumbs ======= -->
-    <section class="breadcrumbs">
-      <div class="container">
-        <div class="d-flex left-content-between align-items-center"></div>
-        <div class="d-flex left-content-between align-items-center">
-          <br>
-          <h2>Imagens AO VIVO de Nova Friburgo</h2>
-          
-          <!--ol>
-            <li><a href="index.html">Home</a></li>
-            <li>Inner Page</li>
-          </ol-->
-        </div>
-
-      </div>
-    </section><!-- End Breadcrumbs -->
-    
-    
-    <section class="inner-page">
-      <div class="container">
-
-<section class="table table-responsive">
-  
-  <tbody> 
-  <tr>
-		  <td>
-        <iframe src="https://www.nethorizontes.com.br/flashmediaserver/grooveip01" allowfullscreen="allowfullscreen" width="400" height="350" frameborder="0"></iframe>
-      </td>
-		  <td>
-        <iframe src="https://player.twitch.tv/?channel=rbmseg&amp, video, or collection>&parent=nfci.pmnf.rj.gov.br"  height="340" width="400" frameborder="0" allowfullscreen> </iframe>
-      </td>	
-      <td>
-        <iframe src="https://player.twitch.tv/?channel=rbm_pte&amp, video, or collection>&parent=nfci.pmnf.rj.gov.br"  height="340" width="400" frameborder="0" allowfullscreen> </iframe>
-      </td>	
-  </tr>
-
-  <!--tr> 
-     <td>
-       <iframe src="https://player.twitch.tv/?channel=rbm_pte&parent" frameborder="0" allowfullscreen="true" scrolling="no" height="378" width="620"></iframe>
-    </td>	
-    <td>
-
-  </td>	
-  <td>
-     <iframe src="https://rtsp.me/embed/DFRhQaki/" allowfullscreen="allowfullscreen" width="400" height="350" frameborder="0"></iframe>
-  </td>	
-  </tr>
-
-  <tr>
-    <td>
-      <iframe src="https://rtsp.me/embed/s7fGzGZ5/" allowfullscreen="allowfullscreen" width="400" height="350" frameborder="0"></iframe>
-    </td>	
-    <td>
-      <iframe src="https://rtsp.me/embed/23sZesan/" allowfullscreen="allowfullscreen" width="400" height="350" frameborder="0"></iframe>
-    </td>	
-    <td>
-      <iframe src="https://rtsp.me/embed/Keb4QtDk/" allowfullscreen="allowfullscreen" width="400" height="350" frameborder="0"></iframe>
-   </td>	
-</tr>
-
-<tr>
-
-  <td>
-     <iframe src="https://rtsp.me/embed/yThTzQZh/" allowfullscreen="allowfullscreen" width="400" height="350" frameborder="0"></iframe>
-  </td>	
-<tr>
-  <td>
-    <iframe src="" allowfullscreen="allowfullscreen" width="400" height="350" frameborder="0"></iframe>
-  </td>	
-</tr-->
+ <!-- ======= Breadcrumbs ======= -->
 
 
-  </tbody>
-  
-</table>
-<!-- END RESPONSIVE TABLE -->
-
-</div>
-
+ 
+<section class="breadcrumbs">
+  <div class="container">
+    <div class="d-flex flex-column align-items-center text-center">
+      <h2>Imagens AO VIVO de Nova Friburgo</h2>
+      <p>
+        <i><b>ATENÇÃO:</b> As câmeras exibidas abaixo são operadas por terceiros e estão disponíveis publicamente online. A Prefeitura não controla nem armazena essas imagens.</i>
+      </p>
+    </div>
+  </div>
 </section>
 
-</main><!-- End #main ->
+
+
+
+
+
+
+<style>
+  .camera-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .camera-box {
+    flex: 1 1 30%; /* 3 por linha, ajustável */
+    max-width: 400px;
+    text-align: center;
+  }
+
+  iframe {
+    width: 100%;
+    height: 350px;
+    border: 0;
+  }
+
+  @media (max-width: 992px) {
+    .camera-box {
+      flex: 1 1 45%; /* 2 por linha em telas médias */
+    }
+  }
+
+  @media (max-width: 600px) {
+    .camera-box {
+      flex: 1 1 100%; /* 1 por linha em telas pequenas */
+    }
+  }
+</style>
+
+<section class="inner-page">
+  <div class="container">
+
+    <div class="camera-grid">
+
+      <div class="camera-box">
+        <p><strong>Centro 
+          <br>Alto das Braunes</strong></p>
+        <iframe src="https://www.nethorizontes.com.br/flashmediaserver/grooveip01" allowfullscreen="allowfullscreen" width="400" height="350" frameborder="0"></iframe>
+      </div>
+
+      <div class="camera-box">
+        <p><strong>Ponte da Saudade
+          <br>Rua Vereador José Martins da Costa</strong></p>
+        <iframe src="https://player.twitch.tv/?channel=rbm_pte&parent=nfci.pmnf.rj.gov.br" height="340" width="400" frameborder="0" allowfullscreen></iframe>
+      </div>
+
+      <div class="camera-box">
+        <p><strong>Olaria 
+          <br>Rua Presidente Getúlio Vargas</strong></p>
+        <iframe src="https://player.twitch.tv/?channel=rbmseg_olaria&amp;parent=nfci.pmnf.rj.gov.br" allowfullscreen></iframe>
+      </div>
+
+      <div class="camera-box">
+        <p><strong>Centro - Paissandu
+          <br>Av. Comte. Bittencourt</strong></p>
+        <iframe src="https://player.twitch.tv/?channel=rbmseg_paissandu&amp;parent=nfci.pmnf.rj.gov.br" allowfullscreen></iframe>
+      </div>
+
+      <div class="camera-box">
+        <p><strong>Centro 
+          <br>Av. Euterpe Friburguense</strong></p>
+        <iframe src="https://player.twitch.tv/?channel=rbmseg&parent=nfci.pmnf.rj.gov.br" allowfullscreen></iframe>
+      </div>
+
+      <div class="camera-box">
+        <p><strong>Centro 
+          <br>Av. Rui Barbosa</strong></p>
+        <iframe src="https://player.twitch.tv/?channel=rbmseg_euterpe&amp:" allowfullscreen></iframe>
+      </div>
+
+      <div class="camera-box">
+        <p><strong>Duas Pedras 
+          <br>Av. Governador Roberto Silveira</strong></p>
+        <iframe src="https://player.twitch.tv/?channel=rbmseg2pedras&amp;parent=nfci.pmnf.rj.gov.br" allowfullscreen></iframe>
+      </div>
+
+      <div class="camera-box">
+        <p><strong>Chácara do Paraíso 
+          <br>Rua Izelino Maduro (Rotatória)</strong></p>
+        <iframe src="https://player.twitch.tv/?channel=rbmsegcparaiso&amp;parent=nfci.pmnf.rj.gov.br" allowfullscreen></iframe>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
   
   <!-- ======= Footer ======= -->
   <footer id="footer">

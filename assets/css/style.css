@@ -1640,7 +1640,7 @@ section {
 
 /*--------------------------------------------------------------
 # Breadcrumbs
---------------------------------------------------------------*/
+--------------------------------------------------------------
 .breadcrumbs {
   padding: 15px 0;
   background: #f0f4f8;
@@ -1686,6 +1686,84 @@ section {
     display: inline-block;
   }
 }
+
+
+/*--------------------------------------------------------------
+# Breadcrumbs
+--------------------------------------------------------------*/
+.breadcrumbs {
+  padding: 20px 15px;
+  background: #f0f4f8;
+  margin-top: 90px;
+  text-align: center;
+  width: 100%;
+}
+
+.breadcrumbs h2 {
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+}
+
+.breadcrumbs p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+}
+
+.breadcrumbs ol li + li {
+  padding-left: 10px;
+}
+
+.breadcrumbs ol li + li::before {
+  display: inline-block;
+  padding-right: 10px;
+  color: #263d4d;
+  content: "/";
+}
+
+/* RESPONSIVO */
+@media (max-width: 992px) {
+  .breadcrumbs {
+    margin-top: 60px;
+    padding: 35px 10px;
+  }
+
+  .breadcrumbs h2 {
+    font-size: 22px;
+  }
+
+  .breadcrumbs p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .breadcrumbs .d-flex {
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100%;
+  }
+
+  .breadcrumbs ol {
+    text-align: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+
 
 /*--------------------------------------------------------------
 # Portfolio Details
