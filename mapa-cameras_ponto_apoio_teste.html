@@ -26,19 +26,52 @@
     max-width: none !important;
   }
 
+  .search-box {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  background: white;
+  padding: 10px;
+  border-radius: 0 8px 8px 0;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.search-box.collapsed {
+  transform: translateX(-85%);
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 0;
+  right: -30px;
+  background: #007bff;
+  color: white;
+  border-radius: 0 4px 4px 0;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+
 
   </style>
 </head>
 <body>
-  <div class="search-box">
-    <label><input type="checkbox" id="checkCamera" checked> Câmeras ao vivo</label><br>
-    <label><input type="checkbox" id="checkApoio" checked> Pontos de apoio</label><br>
-    <label for="raioBusca">Raio (km):</label>
-    <input type="number" id="raioBusca" value="2" min="1" max="50" /><br>
-    <button onclick="buscarProximos()">Buscar</button><br>
-    <button onclick="obterLocalizacaoUsuario()">Usar minha localização</button>
+<div class="search-box" id="menuBox">
+  <div class="toggle-btn" onclick="toggleMenu()">⮜</div>
 
-  </div>
+  <label><input type="checkbox" id="checkCamera" checked> Câmeras ao vivo</label><br>
+  <label><input type="checkbox" id="checkApoio" checked> Pontos de apoio</label><br>
+  
+  <label for="raioBusca">Raio (km):</label>
+  <input type="number" id="raioBusca" value="2" min="1" max="50" /><br>
+  
+  <button onclick="buscarProximos()">Buscar</button><br>
+  <button onclick="obterLocalizacaoUsuario()">Usar minha localização</button>
+</div>
+
 
   <div id="mapa"></div>
 
@@ -231,6 +264,7 @@
     alert("Geolocalização não é suportada pelo seu navegador.");
     return;
   }
+  
 
   navigator.geolocation.getCurrentPosition(
     (pos) => {
@@ -274,6 +308,15 @@
     }
   );
 }
+
+function toggleMenu() {
+  const menuBox = document.getElementById("menuBox");
+  const toggleBtn = menuBox.querySelector(".toggle-btn");
+
+  menuBox.classList.toggle("collapsed");
+  toggleBtn.innerText = menuBox.classList.contains("collapsed") ? "⮞ MENU" : "⮜";
+}
+
   </script>
 </body>
 </html>
