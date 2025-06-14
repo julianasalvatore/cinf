@@ -78,6 +78,7 @@
             <!--li><a href="#contact">Fale conosco</a></li-->
       <li><a href="integracoes.html">#CidadeSegura</a></li>
             <li><a href="camerasaovivo.html">Câmeras AO VIVO</a></li>
+            <li><a href="mapa-pontos_de_apoio-interativo.html">Pontos de Apoio - Mapa interativo</a></li>
             <li class="drop-down"><a href="#">Informações meteorológicas</a>
               <ul>
                 <!--li><a href="cheias.html">Alerta Cheias</a></li-->
@@ -177,6 +178,13 @@
     width: auto !important;
     max-width: none !important;
   }
+
+  /* Ajusta os controles de zoom do Leaflet para mais baixo */
+.leaflet-top.leaflet-left {
+  top: 50px !important;  /* ajuste a distância do topo conforme necessário */
+  left: 10px !important; /* opcional, ajuste lateral */
+  z-index: 999; /* garante que não fiquem atrás da logo */
+}
 
  .search-box {
   position: absolute;
