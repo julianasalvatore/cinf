@@ -2,138 +2,279 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mapa Interativo - Friburgo</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>Radar Meteorológico</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    #mapa {
+    body, html {
+      margin: 0; padding: 0; height: 100%; font-family: Arial, sans-serif;
+    }
+
+    #map {
       height: 100vh;
       width: 100%;
+      position: relative;
+      z-index: 0;
     }
-    #menu {
+
+    .legend-toggle {
       position: absolute;
       top: 10px;
+      left: 50px;
+      z-index: 1100;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .legend {
+      position: absolute;
+      top: 50px;
       left: 10px;
-      z-index: 999;
-      background: white;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+      background: rgba(255, 255, 255, 0.85);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      max-width: 260px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+      line-height: 1.3;
+      z-index: 1000;
+      display: none; /* Oculta inicialmente */
+    }
+
+    .legend .color-scale {
+      height: 14px;
+      width: 100%;
+      background: linear-gradient(to right,
+        #000000 0%,
+        #4a90e2 10%,
+        #50e3c2 40%,
+        #f5a623 70%,
+        #d0021b 100%
+      );
+      margin-top: 8px;
+    }
+
+    .legend .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    #mapControls {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+      user-select: none;
+      z-index: 1000;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 15px;
+    }
+
+    #playPauseBtn {
+      background: #1e90ff;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: 18px;
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    #playPauseBtn:hover {
+      background: #1c7ed6;
+    }
+
+    #timeSlider {
+      width: 230px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 4px;
+      background: #ccc;
+      outline: none;
+    }
+
+    #timeSlider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #1e90ff;
+      cursor: pointer;
+      border: 2px solid white;
+      margin-top: -5px;
+    }
+
+    #timeLabel {
+      color: white;
+      font-weight: bold;
+      min-width: 60px;
+      text-align: center;
+      font-size: 14px;
+      user-select: none;
+      font-family: monospace;
+    }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
+      #mapControls {
+        flex-direction: column;
+        gap: 6px;
+        top: auto;
+        bottom: 20px;
+        transform: translateX(-50%);
+      }
+
+      #timeSlider {
+        width: 180px;
+      }
+
+      .legend-toggle {
+        top: auto;
+        bottom: 90px;
+      }
+
+      .legend {
+        top: auto;
+        bottom: 130px;
+        left: 10px;
+        right: 10px;
+        max-width: none;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="menu">
-    <label for="tipoBusca">Buscar por:</label>
-    <select id="tipoBusca">
-      <option value="apoio">Ponto de apoio</option>
-      <option value="camera">Câmera ao vivo</option>
-    </select>
-    <button onclick="buscarMaisProximo()">Buscar mais próximo</button>
+  <div id="map">
+    <button class="legend-toggle" onclick="toggleLegend()">Legenda</button>
+    <div class="legend" id="legendBox">
+      <strong>Legenda do Radar:</strong><br />
+      Áreas em azul indicam chuva.<br />
+      Opacidade = intensidade.<br />
+      <div class="color-scale"></div>
+      <div class="scale-labels">
+        <span>Fraca</span>
+        <span>Moderada</span>
+        <span>Muito forte</span>
+      </div>
+    </div>
+    <div id="mapControls">
+      <button id="playPauseBtn" title="Play/Pause">▶️</button>
+      <input type="range" id="timeSlider" min="0" max="0" step="1" value="0" />
+      <span id="timeLabel">Carregando...</span>
+    </div>
   </div>
 
-  <div id="mapa"></div>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    const mapa = L.map('mapa').setView([-22.2816, -42.5310], 13);
+    const centro = [-22.2857, -42.5310];
+    const mapa = L.map('map').setView(centro, 10);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap'
+      attribution: '&copy; OpenStreetMap contributors',
     }).addTo(mapa);
 
-    // Pontos de apoio
-    const pontosDeApoio = [
-      { nome: "Ginásio Poliesportivo", coord: [-22.2843, -42.5357] },
-      { nome: "UPA Conselheiro", coord: [-22.2620, -42.5332] }
-    ];
+    L.circle(centro, {
+      color: 'blue',
+      dashArray: '5,10',
+      fillOpacity: 0,
+      radius: 25000,
+    }).addTo(mapa).bindPopup('Cobertura do radar (25 km)');
 
-    // Câmeras
-    const cameras = [
-      { nome: "Av. Rui Barbosa", coord: [-22.270881, -42.533057], link: "https://player.twitch.tv/?channel=rbmseg&amp;parent=nfci.pmnf.rj.gov.br" }
-    ];
+    let radarLayer;
+    const slider = document.getElementById('timeSlider');
+    const timeLabel = document.getElementById('timeLabel');
+    const playPauseBtn = document.getElementById('playPauseBtn');
 
-    // Ícone personalizado (imagem de câmera) para ponto de apoio
-    const iconeCamera = L.icon({
-      iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
-      iconSize: [30, 30],
-      iconAnchor: [15, 30],
-      popupAnchor: [0, -30]
-    });
+    let radarFrames = [];
+    let animationInterval = null;
+    let currentIndex = 0;
 
-    // Ícone padrão do Leaflet para câmera
-    const iconePadrao = L.icon({
-      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      shadowSize: [41, 41]
-    });
-
-    // Adiciona marcadores
-    // Pontos de apoio com ícone de câmera
-    pontosDeApoio.forEach(p => {
-      L.marker(p.coord, { icon: iconeCamera }).addTo(mapa)
-        .bindPopup(`<strong>${p.nome}</strong><br>Ponto de apoio`);
-    });
-
-    // Câmeras com ícone padrão
-    cameras.forEach(cam => {
-      L.marker(cam.coord, { icon: iconePadrao }).addTo(mapa)
-        .bindPopup(`<strong>${cam.nome}</strong><br><a href="${cam.link}" target="_blank">Ver câmera</a>`);
-    });
-
-    // Função para calcular distância
-    function distancia(coord1, coord2) {
-      const [lat1, lon1] = coord1;
-      const [lat2, lon2] = coord2;
-      const rad = Math.PI / 180;
-      const dLat = (lat2 - lat1) * rad;
-      const dLon = (lon2 - lon1) * rad;
-      const a = Math.sin(dLat/2)**2 + Math.cos(lat1*rad) * Math.cos(lat2*rad) * Math.sin(dLon/2)**2;
-      return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); // km
+    function formatTime(ts) {
+      const date = new Date(ts * 1000);
+      return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
     }
 
-    function buscarMaisProximo() {
-      if (!navigator.geolocation) {
-        alert("Geolocalização não suportada.");
-        return;
+    function updateRadar(idx) {
+      if (radarLayer) {
+        mapa.removeLayer(radarLayer);
       }
+      const frame = radarFrames[idx];
+      const url = `https://tilecache.rainviewer.com/v2/radar/${frame.time}/256/{z}/{x}/{y}/2/1_1.png`;
+      radarLayer = L.tileLayer(url, { opacity: 0.5, attribution: '&copy; RainViewer' });
+      radarLayer.addTo(mapa);
+      timeLabel.textContent = formatTime(frame.time);
+      slider.value = idx;
+      currentIndex = idx;
+    }
 
-      navigator.geolocation.getCurrentPosition(pos => {
-        const userCoord = [pos.coords.latitude, pos.coords.longitude];
-        const tipo = document.getElementById('tipoBusca').value;
-        let lista = tipo === "apoio" ? pontosDeApoio : cameras;
+    function playAnimation() {
+      if (animationInterval) return;
+      playPauseBtn.textContent = '⏸';
+      animationInterval = setInterval(() => {
+        currentIndex++;
+        if (currentIndex >= radarFrames.length) currentIndex = 0;
+        updateRadar(currentIndex);
+      }, 1000);
+    }
 
-        let maisProximo = null;
-        let menorDistancia = Infinity;
+    function pauseAnimation() {
+      playPauseBtn.textContent = '▶️';
+      clearInterval(animationInterval);
+      animationInterval = null;
+    }
 
-        lista.forEach(p => {
-          const d = distancia(userCoord, p.coord);
-          if (d < menorDistancia) {
-            menorDistancia = d;
-            maisProximo = p;
-          }
+    function toggleLegend() {
+      const legend = document.getElementById('legendBox');
+      legend.style.display = legend.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Inicializar legenda oculta
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('legendBox').style.display = 'none';
+    });
+
+    fetch('https://api.rainviewer.com/public/weather-maps.json')
+      .then(res => res.json())
+      .then(data => {
+        radarFrames = data.radar.past;
+        slider.max = radarFrames.length - 1;
+        updateRadar(radarFrames.length - 1);
+
+        slider.addEventListener('input', () => {
+          pauseAnimation();
+          updateRadar(parseInt(slider.value));
         });
 
-        if (maisProximo) {
-          mapa.setView(maisProximo.coord, 15);
-          L.popup()
-            .setLatLng(maisProximo.coord)
-            .setContent(`
-              <strong>${maisProximo.nome}</strong><br>
-              ${tipo === "camera" ? `<a href="${maisProximo.link}" target="_blank">Ver câmera</a><br>` : ""}
-              <a href="https://www.google.com/maps/dir/?api=1&destination=${maisProximo.coord[0]},${maisProximo.coord[1]}" target="_blank">
-                Traçar rota no Google Maps
-              </a>
-            `)
-            .openOn(mapa);
-        }
-      }, err => {
-        alert("Não foi possível obter sua localização.");
+        playPauseBtn.addEventListener('click', () => {
+          if (animationInterval) pauseAnimation();
+          else playAnimation();
+        });
+
+        playAnimation();
+      })
+      .catch(err => {
+        timeLabel.textContent = 'Erro ao carregar radar';
+        console.error(err);
       });
-    }
   </script>
 </body>
 </html>
