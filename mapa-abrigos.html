@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Canoas - Voluntário</title>
+  <meta content="" name="descriptison">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon2" rel="icon">
+  <link href="assets/img/apple-touch-icon" rel="apple-touch-icon">
+  <!-- Favicon padrão na raiz -->
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+<!-- PNG fallback -->
+<link rel="icon" type="image/png" href="assets/img/favicon2">
+
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.">
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/venobox/venobox.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top header-inner-pages">
+    <div class="container-fluid d-flex align-items-center left-content-between">
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+          <li class="active"><a href="index.html">Home</a></li>
+          <li><a href="camerasaovivo.html">Câmeras AO VIVO</a></li>
+          <li><a href="mapa-abrigos.html">Abrigos - Mapa Interativo</a></li>
+          <li><a href="previsao-tempo.html">Previsão do Tempo</a></li>
+          <li><a href="radar-canoas.html">Radar Meteorológico</a></li>
+      </nav>
+    </div>
+
+  </header>
+<!-- End Header -->
+
+
+
+<main id="main">
+
+ <!-- ======= Breadcrumbs ======= -->
+<section class="breadcrumbs">
+  <div class="container">
+    <div class="d-flex flex-column align-items-center text-center">
+      <h2>Lista de Abrigos em toda a Cidade</h2>
+      <p>
+        <i><b>ATENÇÃO:</b> As informações abaixo estão disponíveis publicamente online. A responsável pela página apenas centraliza as informações já disponíveis na internet as informações podem mudar sem aviso prévio, por esse motivo, acompanhem as informações fornecidas pelos canais oficiais da prefeitura de Canoas/Rs</i>
+      </p>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mapa Interativo - Canoas/RS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #mapa {
+      height: 100vh;
+      width: 100%;
+    }
+    .search-box {
+      position: absolute;
+      top: 200px;
+      left: 25px;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 280px;
+      transition: all 0.3s ease;
+    }
+    .search-box.collapsed {
+      transform: translateX(-85%);
+    }
+    .toggle-btn {
+      position: absolute;
+      top: 20px;
+      right: -30px;
+      background: #0c6815fd;
+      color: white;
+      border-radius: 0 4px 4px 0;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .leaflet-popup-content {
+      font-size: 15px;
+      line-height: 1.4;
+      min-width: 220px;
+    }
+    .leaflet-top.leaflet-left {
+      top: 50px !important;
+      left: 10px !important;
+      z-index: 999;
+    }
+    .categoria-group {
+      margin-left: 20px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="search-box" id="menuBox">
+    <div class="toggle-btn" onclick="toggleMenu()">⮜</div>
+    <div class="categoria-group">
+      <label><input type="checkbox" id="checkAbrigoMulher" checked onchange="sincronizarAbrigos()"> Exclusivo para Mulheres e Crianças</label><br>
+      <label><input type="checkbox" id="checkAbrigoAnimal" checked onchange="sincronizarAbrigos()"> Abrigo para Animais</label><br>
+      <label><input type="checkbox" id="checkAbrigoColetivo" checked onchange="sincronizarAbrigos()"> Abrigo Coletivo</label>
+    </div>
+    <label for="raioBusca">Raio (km):</label>
+    <input type="number" id="raioBusca" value="5" min="1" max="50" /><br>
+    <button onclick="buscarProximos()">Buscar</button><br>
+    <button onclick="obterLocalizacaoUsuario()">Usar minha localização</button>
+  </div>
+
+  <div id="mapa"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const centroCanoas = [-29.915, -51.18];
+    const mapa = L.map("mapa").setView(centroCanoas, 12);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap",
+    }).addTo(mapa);
+
+    const raioCanoas = 13000;
+
+    const circuloCanoas = L.circle(centroCanoas, {
+      color: 'purple',
+      weight: 3,
+      fillOpacity: 0,
+      dashArray: '10, 10'
+    }).setRadius(raioCanoas).addTo(mapa);
+
+    const iconeAbrigoAnimal = L.icon({ iconUrl: "https://cdn-icons-png.flaticon.com/512/3769/3769065.png", iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32] });
+    const iconeAbrigoMulher = L.icon({ iconUrl: "https://cdn-icons-png.flaticon.com/512/149/149060.png", iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32] });
+    const iconeAbrigoColetivo = L.icon({ iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png", iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32] });
+
+    const abrigos = {
+      mulher: [
+        {
+          nome: "Abrigo para Mulheres e Crianças",
+          endereco: "aguardando dados",
+          referencia: "aguardando dados",
+          telefone: "aguardando dados",
+          coord: [-29.8864297,-51.1897996],
+          icon: iconeAbrigoMulher
+        }
+      ],
+      animal: [
+        {
+          nome: "Abrigo para Animais",
+          endereco: "Av. Boqueirão,1986 - Igara",
+          referencia: "Secretaria Municipal De Bem-Estar Animal - CBEA",
+          telefone: "(51) 3429-2924 / (51) 3427-1169",
+          coord: [-29.9050019,-51.1556612],
+          icon: iconeAbrigoAnimal
+        }
+      ],
+      coletivo: [
+        {
+          nome: "Abrigo Coletivo Canoas Centro",
+          endereco: "Rua Engenheiro Rebouças, 1000 - São Luís",
+          referencia: "Ginásio de Espoertes - no fim da rua",
+          telefone: "sem telefone informado",
+          coord: [-29.8864297,-51.1897996],
+          icon: iconeAbrigoColetivo
+        }
+      ]
+    };
+
+    const grupoAbrigoMulher = L.layerGroup().addTo(mapa);
+    const grupoAbrigoAnimal = L.layerGroup().addTo(mapa);
+    const grupoAbrigoColetivo = L.layerGroup().addTo(mapa);
+
+    function toggleMenu() {
+      const menuBox = document.getElementById("menuBox");
+      const toggleBtn = menuBox.querySelector(".toggle-btn");
+      menuBox.classList.toggle("collapsed");
+      toggleBtn.innerText = menuBox.classList.contains("collapsed") ? "⮞ MENU" : "⮜";
+    }
+
+    function obterLocalizacaoUsuario() {
+      if (!navigator.geolocation) return alert("Geolocalização não suportada.");
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude, longitude } = pos.coords;
+        L.circleMarker([latitude, longitude], {
+          radius: 8,
+          fillColor: "blue",
+          color: "#000",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8
+        }).addTo(mapa).bindPopup("Você está aqui").openPopup();
+        mapa.setView([latitude, longitude], 14);
+      }, () => alert("Não foi possível obter a localização."));
+    }
+
+    function calcularDistancia(origem, destino) {
+      const R = 6371, dLat = (destino[0] - origem[0]) * Math.PI / 180, dLon = (destino[1] - origem[1]) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos(origem[0] * Math.PI / 180) * Math.cos(destino[0] * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function sincronizarAbrigos() {
+      buscarProximos();
+    }
+
+    function criarPopup(info) {
+      return `
+        <strong>${info.nome}</strong><br>
+        <strong>Endereço:</strong> ${info.endereco}<br>
+        <strong>Referência:</strong> ${info.referencia}<br>
+        <strong>Telefone:</strong> ${info.telefone}<br>
+        <a href='https://www.google.com/maps/dir/?api=1&destination=${info.coord[0]},${info.coord[1]}' target='_blank'>Ver rota no Google Maps</a>
+      `;
+    }
+
+    function buscarProximos() {
+      const raio = parseFloat(document.getElementById("raioBusca").value);
+      const origem = [mapa.getCenter().lat, mapa.getCenter().lng];
+
+      grupoAbrigoMulher.clearLayers();
+      grupoAbrigoAnimal.clearLayers();
+      grupoAbrigoColetivo.clearLayers();
+
+      if (document.getElementById("checkAbrigoMulher").checked) {
+        abrigos.mulher.forEach(p => {
+          if (calcularDistancia(origem, p.coord) <= raio) {
+            L.marker(p.coord, { icon: p.icon })
+              .bindPopup(criarPopup(p))
+              .addTo(grupoAbrigoMulher);
+          }
+        });
+      }
+
+      if (document.getElementById("checkAbrigoAnimal").checked) {
+        abrigos.animal.forEach(p => {
+          if (calcularDistancia(origem, p.coord) <= raio) {
+            L.marker(p.coord, { icon: p.icon })
+              .bindPopup(criarPopup(p))
+              .addTo(grupoAbrigoAnimal);
+          }
+        });
+      }
+
+      if (document.getElementById("checkAbrigoColetivo").checked) {
+        abrigos.coletivo.forEach(p => {
+          if (calcularDistancia(origem, p.coord) <= raio) {
+            L.marker(p.coord, { icon: p.icon })
+              .bindPopup(criarPopup(p))
+              .addTo(grupoAbrigoColetivo);
+          }
+        });
+      }
+    }
+
+    window.onload = buscarProximos;
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</section>
+
+
+  
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-2 col-md-0">
+            <div class="footer-info">
+               <h4> Canoas - Voluntário</h4>
+              <div class="social-links mt-6">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-8 footer-links">
+            <h4>Links úteis</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="index.htmlt">Home</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="camerasaovivo.html">Câmeras AO VIVO</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="cheias.html">Alertas Cheias</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="inner-page.html">Previsão do Tempo</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-5 col-md-12 footer-links">
+            <h4>Telefons úteis</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://www.canoas.rs.gov.br/guarda-municipal/">153 - Guarda Municipal</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://defesacivilnf.wixsite.com/home">(51) 98255-0805 - Defesa Civil de Canoas</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://www.brigadamilitar.rs.gov.br/inicial">190 - Brigada Militar do Estado do Rio Grande do Sul</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://www.bombeiros.rs.gov.br/inicial">193 - Corpo de Bombeiros do Estado do Rio Grande do Sul</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">156 - Diretoria de Trânsito, para demandas de sinalização</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://www.canoas.rs.gov.br/servicos/central-de-atendimento-ao-cidadao/">180 - Central de Atendimento à Mulher</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="https://ouvidoria.mdh.gov.br/">100 - Disque Direitos Humanos</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="ssp.rs.gov.br"> 181 ou (51) 3425-7612 - Disque Denúncia</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-2 col-md-12 footer-links">
+          <div class="social-links mt-10">
+            <h4>Nossas redes</h4>
+            <a href="https://www.facebook.com/PrefCanoas/" class="facebook"><i class="bx bxl-facebook"></i></a>
+            <a href="https://www.instagram.com/prefcanoas/" class="instagram"><i class="bx bxl-instagram"></i></a>
+            <a href="https://x.com/prefcanoas" class="twitter"><i class="bx bxl-twitter"></i></a>
+            <a href="https://www.youtube.com/c/PrefeituradeCanoasOficial" class="Youtube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Canoas/RS - Voluntário</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+        Designed by <a href="https://julianasalvatore.github.io/jlira/">Juliana Lira</a>
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/jquery/jquery.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/jquery.easing/jquery.easing.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+  <script src="assets/vendor/counterup/counterup.min.js"></script>
+  <script src="assets/vendor/venobox/venobox.min.js"></script>
+  <script src="assets/vendor/owl.carousel/owl.carousel.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+
+        
+          <!-- ínicio plugin de whatsapp -->
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+          <a href="https://wa.me/51982550805?text=%20%20%20%20" style="position:fixed;width:60px;height:60px;bottom:30px;right:10px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
+          z-index:1000;" target="_blank">
+          <i style="margin-top:16px" class="fa fa-whatsapp"></i>
+          </a>
+          
+                <!-- fim plugin de whatsapp -->
+
+
+              <!-- ínicio plugin de acessibilidade -->
+              <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+              <div vw class="enabled">
+              <div vw-access-button class="active"></div>
+              <div vw-plugin-wrapper>
+                <div class="vw-plugin-top-wrapper"></div>
+              </div>
+              </div>
+              <script>
+              new window.VLibras.Widget('https://vlibras.gov.br/app');
+              </script>
+          
+          
+          
+              <!-- fim plugin de acessibilidade -->
+
+              
+              <a href="https://t.me/+ofuG6kPZhWxmMTYx" class="float">
+                <svg class="icon">
+                  <path
+                    d="M0,17.46A3.22,3.22,0,0,1,1.87,16q4.62-1.8,9.26-3.56L42.84.25A3.55,3.55,0,0,1,43.61,0,2,2,0,0,1,46,2.18a17.08,17.08,0,0,1-.45,2.91Q42.3,20.44,39,35.77a6.38,6.38,0,0,1-.53,1.52,1.79,1.79,0,0,1-2.27,1,4.87,4.87,0,0,1-1.36-.65c-3.3-2.39-6.58-4.8-9.87-7.21l-.42-.31c-.13.12-.26.22-.37.33l-5,4.81a2.46,2.46,0,0,1-1.83.75c0-.65.08-1.29.13-1.92.2-2.81.39-5.62.61-8.43a1,1,0,0,1,.3-.59Q27.9,16.42,37.47,7.84s.1-.07.13-.12L38,7.05a2.48,2.48,0,0,0-.82-.14,2.47,2.47,0,0,0-.89.41q-11.9,7.42-23.8,14.87a.85.85,0,0,1-.64.11Q6.73,20.76,1.68,19.17A2.72,2.72,0,0,1,0,18Z" />
+                </svg>
+              </a>
+              <style>
+                
+                :root {
+                  --icon-color: #fff;
+                  --icon-hover: #fff;
+                  --background-color: #0060ff;
+                  --background-hover: #0044b3
+                }
+              
+                .icon {
+                  width: 48px;
+                  height: 48px;
+                  transform: scale(0.6) translate(15%, 28%);
+                  fill: var(--icon-color)
+                }
+              
+                .float {
+                  position: fixed;
+                  cursor: pointer;
+                  width: 60px;
+                  height: 60px;
+                  bottom: 120px;
+                  right: 10px;
+                  transition: 1s;
+                  background-color: var(--background-color);
+                  border-radius: 50px;
+                  animation:  3s infinite;
+                  -webkit-animation:  3s infinite;
+                  -moz-animation: 3s infinite;
+                  -o-animation:  3s infinite;
+                  z-index: 9000
+                }
+              
+                .float:hover {
+                  background-color: var(--background-hover)
+                }
+              
+                .float:hover .icon {
+                  fill: var(--icon-hover)
+                }
+              
+                @keyframes pulse {
+                  0% {
+                    -webkit-box-shadow: 0 0 0 0 rgba(0, 96, 255, 1)
+                  }
+              
+                  70% {
+                    -webkit-box-shadow: 0 0 0 20px rgba(0, 96, 255, 0)
+                  }
+              
+                  100% {
+                    -webkit-box-shadow: 0 0 0 0 rgba(0, 96, 255, 0)
+                  }
+                }
+              
+                @-webkit-keyframes pulse {
+                  0% {
+                    -webkit-box-shadow: 0 0 0 0 rgba(0, 96, 255, 1)
+                  }
+              
+                  70% {
+                    -webkit-box-shadow: 0 0 0 20px rgba(0, 96, 255, 0)
+                  }
+              
+                  100% {
+                    -webkit-box-shadow: 0 0 0 0 rgba(0, 96, 255, 0)
+                  }
+                }
+              
+                @-moz-keyframes pulse {
+                  0% {
+                    -webkit-box-shadow: 0 0 0 0 rgba(0, 96, 255, 1)
+                  }
+              
+                  70% {
+                    -webkit-box-shadow: 0 0 0 20px rgba(0, 96, 255, 0)
+                  }
+              
+                  100% {
+                    -webkit-box-shadow: 0 0 0 0 rgba(0, 96, 255, 0)
+                  }
+                }
+              
+                @-o-keyframes pulse {
+                  0% {
+                    -webkit-box-shadow: 0 0 0 0 rgba(0, 96, 255, 1)
+                  }
+              
+                  70% {
+                    -webkit-box-shadow: 0 0 0 20px rgba(0, 96, 255, 0)
+                  }
+              
+                  100% {
+                    -webkit-box-shadow: 0 0 0 0 rgba(0, 96, 255, 0)
+                  }
+                }
+              </style>
+<-==================================-->
+
+</body>
+
+</html>
