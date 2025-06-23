@@ -133,7 +133,7 @@
 
   <main id="main">
 
-    <!-- ======= Breadcrumbs ======= -->
+    <!-- ======= Breadcrumbs ======= ->
     <section class="breadcrumbs">
       <div class="container">
 
@@ -144,19 +144,243 @@
             <li><a href="index.html">Home</a></li>
             <li>Inner Page</li>
           </ol-->
-        </div>
+        <!--/div>
 
       </div>
     </section><!-- End Breadcrumbs -->
 
   </section>
 
-  <section class="inner-page">
+   <!-- ======= Breadcrumbs ======= -->
+<section class="breadcrumbs">
+  <div class="container">
+    <div class="d-flex flex-column align-items-center text-center">
+
+      <p>
+        <i><b>ATENÇÃO:</b> As informações abaixo estão disponíveis publicamente online no site Open Weather</i>
+      </p>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Nova Friburgo/RJ - Clima</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    section {
+      background-color: white;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 95%;
+      max-width: 1000px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    #forecast-container > .day-forecast {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 10px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    #forecast-container > .day-forecast:last-child {
+      border-bottom: none;
+    }
+
+    .day-forecast img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .day-forecast .info {
+      flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <section id="weather-info">
+    <h2>Informações Climáticas Atuais</h2>
+    <p><strong>Atualizado em:</strong> <span id="last_update">--</span></p>
+    <p><strong>Local:</strong> Nova Friburgo, RJ</p>
+    <p><strong>Temperatura:</strong> <span id="temp">--</span>°C</p>
+    <p><strong>Sensação Térmica:</strong> <span id="feels_like">--</span>°C</p>
+    <p><strong>Umidade:</strong> <span id="humidity">--</span>%</p>
+    <p><strong>Pressão:</strong> <span id="pressure">--</span> hPa</p>
+    <p><strong>Vento:</strong> <span id="wind_speed">--</span> m/s</p>
+    <p><strong>Nuvens:</strong> <span id="clouds">--</span>%</p>
+    <p><strong>Descrição:</strong> <span id="description">--</span>
+      <img id="weather-icon" src="" alt="" style="vertical-align: middle; width: 40px; height: 40px;">
+    </p>
+  </section>
+
+  <section id="forecast">
+    <h3>Previsão do tempo resumida para hoje e para os próximos 4 Dias</h3>
+    <div id="forecast-container"></div>
+  </section>
+
+  <script>
+    const apiKey = "594af3a9e98618fef254034198b1a293";
+    const lat = -22.2811;  // Latitude de Nova Friburgo
+    const lon = -42.5283;  // Longitude de Nova Friburgo
+
+    function carregarDadosClimaticos() {
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=pt_br`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("temp").textContent = data.main.temp.toFixed(1);
+          document.getElementById("feels_like").textContent = data.main.feels_like.toFixed(1);
+          document.getElementById("humidity").textContent = data.main.humidity;
+          document.getElementById("pressure").textContent = data.main.pressure;
+          document.getElementById("wind_speed").textContent = data.wind.speed;
+          document.getElementById("clouds").textContent = data.clouds.all;
+          document.getElementById("description").textContent = data.weather[0].description;
+
+          const iconCode = data.weather[0].icon;
+          const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+          document.getElementById("weather-icon").src = iconUrl;
+          document.getElementById("weather-icon").alt = data.weather[0].description;
+
+          document.getElementById("last_update").textContent = new Date().toLocaleString("pt-BR");
+        })
+        .catch(error => {
+          console.error("Erro ao obter dados climáticos:", error);
+          alert("Erro ao carregar clima atual.");
+        });
+    }
+
+    function carregarPrevisao() {
+      const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=pt_br`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const diasPrevisao = {};
+          data.list.forEach(item => {
+            const date = new Date(item.dt * 1000);
+            const hora = date.getHours();
+            const dia = date.toLocaleDateString("pt-BR");
+
+            if (hora === 12 && !diasPrevisao[dia]) {
+              diasPrevisao[dia] = item;
+            }
+          });
+
+          const container = document.getElementById("forecast-container");
+          container.innerHTML = "";
+
+          Object.keys(diasPrevisao).slice(0, 7).forEach(dia => {
+            const item = diasPrevisao[dia];
+            const icon = item.weather[0].icon;
+            const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+            const desc = item.weather[0].description;
+            const tempMin = item.main.temp_min.toFixed(1);
+            const tempMax = item.main.temp_max.toFixed(1);
+
+            const div = document.createElement("div");
+            div.className = "day-forecast";
+            div.innerHTML = `
+              <img src="${iconUrl}" alt="${desc}">
+              <div class="info">
+                <strong>${dia}</strong><br>
+                ${desc}<br>
+                Máx: ${tempMax}°C / Mín: ${tempMin}°C
+              </div>
+            `;
+            container.appendChild(div);
+          });
+        })
+        .catch(error => {
+          console.error("Erro ao carregar previsão:", error);
+          alert("Erro ao carregar previsão dos próximos dias.");
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      carregarDadosClimaticos();
+      carregarPrevisao();
+    });
+  </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!--section class="inner-page">
     <div class="container">
       <iframe id="blockrandom" name="iframe" src="https://www.cptec.inpe.br/previsao-tempo/rj/nova-friburgo" width="100%" height="880" scrolling="auto" frameborder="0" class="wrapper">
         Esta opção não irá funcionar corretamente. Infelizmente, seu navegador não suporta frames.</iframe>
 
-    </div>
+    </div-->
     
 </main><!-- End #main -->
 
