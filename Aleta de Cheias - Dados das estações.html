@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php -->
+<html lang="pt-br" style="" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Aleta de Cheias - Dados das estações</title>
+
+	
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	 
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+ 
+		<link href="./Aleta de Cheias - Dados das estações_files/filtergrid.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="./Aleta de Cheias - Dados das estações_files/normalize.css">
+		<link rel="stylesheet" href="./Aleta de Cheias - Dados das estações_files/style.css">
+		<link href="./Aleta de Cheias - Dados das estações_files/layout.css" rel="stylesheet" type="text/css">
+		<link href="./Aleta de Cheias - Dados das estações_files/jquery-ui.css" rel="stylesheet" type="text/css">
+		<link href="./Aleta de Cheias - Dados das estações_files/estilos.css" rel="stylesheet" type="text/css">
+		<link href="./Aleta de Cheias - Dados das estações_files/bootstrap.min.css" rel="stylesheet">
+		<link href="./Aleta de Cheias - Dados das estações_files/bootstrap2.min.css" rel="stylesheet">
+		<link href="./Aleta de Cheias - Dados das estações_files/font-awesome.min.css" rel="stylesheet">
+		<link href="./Aleta de Cheias - Dados das estações_files/animate.min.css" rel="stylesheet">
+		<link href="./Aleta de Cheias - Dados das estações_files/custom.css" rel="stylesheet">
+		<link href="./Aleta de Cheias - Dados das estações_files/floatexamples.css" rel="stylesheet" type="text/css">
+		<link href="./Aleta de Cheias - Dados das estações_files/jquery-ui-1.8.18.custom.css" rel="stylesheet">
+		<link href="./Aleta de Cheias - Dados das estações_files/style-alerta.css" rel="stylesheet">
+
+<script src="./Aleta de Cheias - Dados das estações_files/jquery.min.js.download"></script>
+<script src="./Aleta de Cheias - Dados das estações_files/jquery.drawDoughnutChart.js.download"></script> 
+<script type="text/javascript" src="./Aleta de Cheias - Dados das estações_files/tablefilter_all_min.js.download"></script>
+		<script src="./Aleta de Cheias - Dados das estações_files/jquery-ui-1.8.18.custom.min.js.download"></script>
+		<script src="./Aleta de Cheias - Dados das estações_files/bootstrap.min.js.download"></script>
+		<script src="./Aleta de Cheias - Dados das estações_files/custom.js.download"></script>
+		<script src="./Aleta de Cheias - Dados das estações_files/modernizr.js.download"></script>
+		<script src="./Aleta de Cheias - Dados das estações_files/jquery-latest.min.js.download" type="text/javascript"></script>
+		<script src="./Aleta de Cheias - Dados das estações_files/jquery-ui.js.download"></script>
+
+		<script>
+			//<![CDATA[
+			$(function() { 
+			  $("#abas").tabs({ collapsible: true }); 
+			});
+			// ]]>
+		</script>
+<style>
+	.th1{
+		background-color: #E1E1E1;
+	}
+	.td2{
+		background-color: #EBECEE;
+	}
+	.td3{
+		background-color: #FFFF00;
+	}
+	.td4{
+		background-color: #DDF4FF;
+	}
+	.td5{
+		background-color: #ABE3FF;
+	}
+</style>
+
+<script>
+$(document).ready(function () {
+    $("nav").find("li").on("click", "a", function () {
+        $('.navbar-collapse.in').collapse('hide');
+    });
+});
+</script>
+<link id="Table_style" type="text/css" rel="stylesheet" href="./Aleta de Cheias - Dados das estações_files/filtergrid(1).css"></head>
+<body class="nav-md">
+	<div class="container body">
+		<div role="main">
+			<div class="row"> 
+				<div class="col-md-12 col-sm-12 col-xs-12" style="padding-right:0%; padding-left:0%;">
+					<div class="col-md-2 col-sm-12 col-xs-12" style="padding-top:0.5%;"> 
+						<a href="http://alertadecheias.inea.rj.gov.br/"><img title="Sistema de Alerta de Cheias" src="./Aleta de Cheias - Dados das estações_files/logo_alerta_cheias2.png" style="height:120px; width:120px;"></a>
+					</div>
+					<div class="col-md-3 col-sm-12 col-xs-12" style="text-align:center; padding-top:2%;">
+						<span id="titulo">Sistema de Alerta de Cheias</span><br><br>
+						<a target="_blank" href="https://www.facebook.com/alertadecheias"><i class="fa fa-facebook-square redes"></i></a>
+						<a target="_blank" href="https://twitter.com/alertadecheias"><i class="fa fa-twitter-square redes"></i></a>
+						<a target="_blank" href="https://www.instagram.com/alertadecheias"><i class="fa fa-instagram redes"></i></a>
+					</div>
+					<div class="col-md-7 col-sm-12 col-xs-12" style="text-align:center;">
+						<div style="width:100%;"><img src="./Aleta de Cheias - Dados das estações_files/triunvirato.png" style="width:60%;"><br></div>
+						<nav class="navbar navbar-default" role="navigation" style="border-radius: 0px 0px 0px 0px; padding:0px; margin:0px;">
+							<div class="container-fluid">
+								<center><div class="navbar-header">
+									<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span>
+										<span class="icon-bar"></span>
+										<span class="icon-bar"></span>
+										<span class="icon-bar"></span>
+									</button>
+								</div></center>
+								<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+									<ul class="nav navbar-nav navbar-right">
+										<li class="menu_li" style="border-bottom:1px solid #e8e8e8;"><a href="http://alertadecheias.inea.rj.gov.br/mapa.php">Mapa</a></li>
+										<li class="menu_li" style="border-bottom:1px solid #e8e8e8;"><a href="http://alertadecheias.inea.rj.gov.br/radar.php">Radar</a></li>
+										<li class="menu_li" style="border-bottom:1px solid #e8e8e8;"><a href="http://alertadecheias.inea.rj.gov.br/previsao.php">Previsão Hidrometeorológica</a></li>
+										<li class="menu_li" style="border-bottom:1px solid #e8e8e8;"><a href="http://alertadecheias.inea.rj.gov.br/termos.php">Termos Meteorológicos</a></li>
+										<li class="menu_li" style="border-bottom:1px solid #e8e8e8;"><a href="http://alertadecheias.inea.rj.gov.br/analise.php">Análise Hidrometeorológica</a></li>
+										<li class="active menu_li" style="border-bottom:1px solid #e8e8e8;"><a href="http://alertadecheias.inea.rj.gov.br/dados.php">Dados</a></li>
+										<li class="menu_li" style="border-bottom:1px solid #e8e8e8;"><a data-toggle="collapse" data-target=".in" href="http://alertadecheias.inea.rj.gov.br/sobre.php">Sobre </a></li>
+									</ul>
+								</div>
+							</div>
+						</nav>
+					</div>
+				</div>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="x_panel" style="border: 0px solid transparent;"> <br><br>
+							<div class="x_title">
+								<h2 id="lbl_titulo"><b>Dados da Região Hidrográfica:</b><br> Rio Dois Rios | <a href="http://alertadecheias.inea.rj.gov.br/dados/lagos_sao_joao.php">Anterior</a></h2>
+								<div class="clearfix"></div>
+							</div>
+							<div class="x_content">
+
+							<div id="abas" class="ui-tabs ui-widget ui-widget-content ui-corner-all ui-tabs-collapsible">
+								<ul id="abast" class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" role="tablist">
+									<li id="abast1" class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" role="tab" tabindex="0" aria-controls="aba-1" aria-labelledby="ui-id-1" aria-selected="true"><a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#aba-1" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1">Estações</a></li>
+									<li id="abast1" class="ui-state-default ui-corner-top" role="tab" tabindex="-1" aria-controls="aba-2" aria-labelledby="ui-id-2" aria-selected="false"><a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#aba-2" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-2">Estações desatualizadas</a></li>
+								</ul>
+								<div id="aba-1" aria-labelledby="ui-id-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-expanded="true" aria-hidden="false">
+									<p>Caso deseje ver o gráfico da estação, clique sobre um campo na coluna "Curso da água".</p>
+									<div id="openModal2142084" class="modalDialog">
+												<div>
+													<a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#close" title="Close" class="close">X</a>
+													<iframe src="./Aleta de Cheias - Dados das estações_files/graficos2142084.html" width="100%" height="400" style="border-style: hidden; width: 100%"></iframe>
+												</div>
+											</div><div id="openModal2242125" class="modalDialog">
+												<div>
+													<a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#close" title="Close" class="close">X</a>
+													<iframe src="./Aleta de Cheias - Dados das estações_files/graficos2242125.html" width="100%" height="400" style="border-style: hidden; width: 100%"></iframe>
+												</div>
+											</div><div id="openModal2242126" class="modalDialog">
+												<div>
+													<a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#close" title="Close" class="close">X</a>
+													<iframe src="./Aleta de Cheias - Dados das estações_files/graficos2242126.html" width="100%" height="400" style="border-style: hidden; width: 100%"></iframe>
+												</div>
+											</div><div id="openModal2242142" class="modalDialog">
+												<div>
+													<a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#close" title="Close" class="close">X</a>
+													<iframe src="./Aleta de Cheias - Dados das estações_files/graficos2242142.html" width="100%" height="400" style="border-style: hidden; width: 100%"></iframe>
+												</div>
+											</div><div id="openModal2242144" class="modalDialog">
+												<div>
+													<a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#close" title="Close" class="close">X</a>
+													<iframe src="./Aleta de Cheias - Dados das estações_files/graficos2242144.html" width="100%" height="400" style="border-style: hidden; width: 100%"></iframe>
+												</div>
+											</div><table id="Table" class="TF" cellpadding="0" cellspacing="0">
+										<tbody><tr class="fltrow"><td><select id="flt0_Table" ct="0" filled="1" class="flt"><option value=""> [ Mostrar Todas ] </option><option value="Bom Jardim">Bom Jardim</option><option value="Cantagalo">Cantagalo</option><option value="Nova Friburgo">Nova Friburgo</option></select></td><td><select id="flt1_Table" ct="1" filled="1" class="flt"><option value=""> [ Mostrar Todas ] </option><option value="-">-</option><option value="rio Cônego">rio Cônego</option><option value="rio Grande">rio Grande</option><option value="rio Santo Antônio">rio Santo Antônio</option></select></td><td><input id="flt2_Table" type="hidden" ct="2" class="flt"></td><td><input id="flt3_Table" type="hidden" ct="3" class="flt"></td><td><input id="flt4_Table" type="hidden" ct="4" class="flt"></td><td><input id="flt5_Table" type="hidden" ct="5" class="flt"></td><td><input id="flt6_Table" type="hidden" ct="6" class="flt"></td><td><input id="flt7_Table" type="hidden" ct="7" class="flt"></td><td><input id="flt8_Table" type="hidden" ct="8" class="flt"></td><td><input id="flt9_Table" type="hidden" ct="9" class="flt"></td><td><input id="flt10_Table" type="hidden" ct="10" class="flt"></td><td><input id="flt11_Table" type="hidden" ct="11" class="flt"></td><td><input id="flt12_Table" type="hidden" ct="12" class="flt"></td><td><input id="flt13_Table" type="hidden" ct="13" class="flt"></td><td><input id="flt14_Table" type="hidden" ct="14" class="flt"></td><td><input id="flt15_Table" type="hidden" ct="15" class="flt"></td><td><input id="flt16_Table" type="hidden" ct="16" class="flt"></td></tr><tr>
+											<th rowspan="2" class="th1"> Município </th>
+											<th rowspan="2" class="th1"> Curso da água * </th>
+											<th rowspan="2" class="th1"> Nome da Estação </th>
+											<th rowspan="2" class="th1"> Status do rio </th>
+											<th rowspan="2" class="th1"> Última Leitura </th>
+											<th rowspan="2" class="th1"> Status de Monitoramento </th>
+											<th colspan="6" class="th1"> Chuva acumulada (milímetros ) </th>
+											<th colspan="4" class="th1"> Nível do rio (metros)</th>
+											<th rowspan="2" class="th1"> Acessar dados </th>
+										</tr>
+										<tr>
+											<th class="th1"> Último </th>
+											<th class="th1"> 1h </th>
+											<th class="th1"> 4h </th>
+											<th class="th1"> 24h </th>
+											<th class="th1"> 96h </th>
+											<th class="th1"> 30d </th>
+											<th class="th1"> Último </th>
+											<th class="th1"> 15 min </th>
+											<th class="th1"> 30 min </th>
+											<th class="th1"> 45 min </th>
+										</tr>
+										<tr style="display: none;">
+											<td colspan="1" class="td2">Cantagalo</td>
+											<td colspan="1" class="td2"><a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#openModal2142084">-</a></td>
+
+											
+
+											<td colspan="1" class="td2">Cantagalo </td>
+											<td colspan="1" class="td2">Estação Pluviométrica</td>
+											<td colspan="1" class="td2">22/12/2020 18:00</td>
+											<td colspan="1" style="background-color: #999999; color:#fff;">Rede básica</td>
+											<td colspan="1" class="td4">2.4</td>
+											<td colspan="1" class="td4">25.6</td>
+											<td colspan="1" class="td4">25.6</td>
+											<td colspan="1" class="td4">25.6</td>
+											<td colspan="1" class="td4">28.4</td>
+											<td colspan="1" class="td4">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5"><a href="http://alertadecheias.inea.rj.gov.br/alertadecheias/214208420.html"><img src="./Aleta de Cheias - Dados das estações_files/icone_dados.png" height="22px" width"10px"=""> </a></td>
+										</tr>
+										<tr>
+											<td colspan="1" class="td2">Nova Friburgo</td>
+											<td colspan="1" class="td2"><a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#openModal2242125">rio Santo Antônio</a></td>
+
+											
+
+											<td colspan="1" class="td2">Ypu </td>
+											<td colspan="1" class="td2"><img src="./Aleta de Cheias - Dados das estações_files/estavel.png" height="30" width="40"></td>
+											<td colspan="1" class="td2">22/12/2020 18:15</td>
+											<td colspan="1" style="background-color: #999999; color:#fff;">Rede básica</td>
+											<td colspan="1" class="td4">0.4</td>
+											<td colspan="1" class="td4">23.8</td>
+											<td colspan="1" class="td4">34</td>
+											<td colspan="1" class="td4">34</td>
+											<td colspan="1" class="td4">43.6</td>
+											<td colspan="1" class="td4">-</td>
+											<td colspan="1" class="td5">0.88</td>
+											<td colspan="1" class="td5">0.88</td>
+											<td colspan="1" class="td5">0.89</td>
+											<td colspan="1" class="td5">0.9</td>
+											<td colspan="1" class="td5"><a href="http://alertadecheias.inea.rj.gov.br/alertadecheias/224212520.html"><img src="./Aleta de Cheias - Dados das estações_files/icone_dados.png" height="22px" width"10px"=""> </a></td>
+										</tr>
+										<tr>
+											<td colspan="1" class="td2">Nova Friburgo</td>
+											<td colspan="1" class="td2"><a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#openModal2242126">rio Cônego</a></td>
+
+											
+
+											<td colspan="1" class="td2">Olaria </td>
+											<td colspan="1" class="td2"><img src="./Aleta de Cheias - Dados das estações_files/estavel.png" height="30" width="40"></td>
+											<td colspan="1" class="td2">22/12/2020 18:15</td>
+											<td colspan="1" style="background-color: #999999; color:#fff;">Rede básica</td>
+											<td colspan="1" class="td4">0.4</td>
+											<td colspan="1" class="td4">22.2</td>
+											<td colspan="1" class="td4">29.6</td>
+											<td colspan="1" class="td4">29.6</td>
+											<td colspan="1" class="td4">41.4</td>
+											<td colspan="1" class="td4">-</td>
+											<td colspan="1" class="td5">0.69</td>
+											<td colspan="1" class="td5">0.69</td>
+											<td colspan="1" class="td5">0.69</td>
+											<td colspan="1" class="td5">0.7</td>
+											<td colspan="1" class="td5"><a href="http://alertadecheias.inea.rj.gov.br/alertadecheias/224212620.html"><img src="./Aleta de Cheias - Dados das estações_files/icone_dados.png" height="22px" width"10px"=""> </a></td>
+										</tr>
+										<tr>
+											<td colspan="1" class="td2">Nova Friburgo</td>
+											<td colspan="1" class="td2"><a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#openModal2242142">-</a></td>
+
+											
+
+											<td colspan="1" class="td2">Pico Caledônia </td>
+											<td colspan="1" class="td2">Estação Pluviométrica</td>
+											<td colspan="1" class="td2">22/12/2020 17:45</td>
+											<td colspan="1" style="background-color: #999999; color:#fff;">Rede básica</td>
+											<td colspan="1" class="td4">0.4</td>
+											<td colspan="1" class="td4">7.4</td>
+											<td colspan="1" class="td4">14.2</td>
+											<td colspan="1" class="td4">19.4</td>
+											<td colspan="1" class="td4">53</td>
+											<td colspan="1" class="td4">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5"><a href="http://alertadecheias.inea.rj.gov.br/alertadecheias/224214220.html"><img src="./Aleta de Cheias - Dados das estações_files/icone_dados.png" height="22px" width"10px"=""> </a></td>
+										</tr>
+										<tr style="display: none;">
+											<td colspan="1" class="td2">Bom Jardim</td>
+											<td colspan="1" class="td2"><a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#openModal2242144">rio Grande</a></td>
+
+											
+
+											<td colspan="1" class="td2">Banquete </td>
+											<td colspan="1" class="td2"><img src="./Aleta de Cheias - Dados das estações_files/subindo.png" height="30" width="40"></td>
+											<td colspan="1" class="td2">22/12/2020 18:00</td>
+											<td colspan="1" style="background-color: #999999; color:#fff;">Rede básica</td>
+											<td colspan="1" class="td4">2.4</td>
+											<td colspan="1" class="td4">20.2</td>
+											<td colspan="1" class="td4">101.4</td>
+											<td colspan="1" class="td4">101.4</td>
+											<td colspan="1" class="td4">119.4</td>
+											<td colspan="1" class="td4">-</td>
+											<td colspan="1" class="td5">1.52</td>
+											<td colspan="1" class="td5">1.51</td>
+											<td colspan="1" class="td5">1.52</td>
+											<td colspan="1" class="td5">1.52</td>
+											<td colspan="1" class="td5"><a href="http://alertadecheias.inea.rj.gov.br/alertadecheias/224214420.html"><img src="./Aleta de Cheias - Dados das estações_files/icone_dados.png" height="22px" width"10px"=""> </a></td>
+										</tr>
+									</tbody></table>
+								</div>
+
+								<div id="aba-2" aria-labelledby="ui-id-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display: none;">
+									<p>Caso deseje ver o gráfico da estação, clique sobre um campo na coluna "Curso da água".</p>
+									<div id="openModalBE70370E" class="modalDialog">
+												<div>
+													<a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#close" title="Close" class="close">X</a>
+													<iframe src="./Aleta de Cheias - Dados das estações_files/graficosBE70370E.html" width="100%" height="400" style="border-style: hidden; width: 100%"></iframe>
+												</div>
+											</div><div id="openModalB56647EA" class="modalDialog">
+												<div>
+													<a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#close" title="Close" class="close">X</a>
+													<iframe src="./Aleta de Cheias - Dados das estações_files/graficosB56647EA.html" width="100%" height="400" style="border-style: hidden; width: 100%"></iframe>
+												</div>
+											</div><table id="Table" class="TF" cellpadding="0" cellspacing="0">
+										<tbody><tr>
+											<th rowspan="2" class="th1"> Município </th>
+											<th rowspan="2" class="th1"> Curso da água *</th>
+											<th rowspan="2" class="th1"> Nome da Estação </th>
+											<th rowspan="2" class="th1"> Status do rio </th>
+											<th rowspan="2" class="th1"> Última Leitura </th>
+											<th rowspan="2" class="th1"> Status de Monitoramento </th>
+											<th colspan="6" class="th1"> Chuva acumulada (milímetros ) </th>
+											<th colspan="4" class="th1"> Nível do rio (metros)</th>
+											<th rowspan="2" class="th1"> Acessar dados </th>
+										</tr>
+										<tr>
+											<th class="th1"> Último </th>
+											<th class="th1"> 1h </th>
+											<th class="th1"> 4h </th>
+											<th class="th1"> 24h </th>
+											<th class="th1"> 96h </th>
+											<th class="th1"> 30d </th>
+											<th class="th1"> Último </th>
+											<th class="th1"> 15 min </th>
+											<th class="th1"> 30 min </th>
+											<th class="th1"> 45 min </th>
+										</tr>
+										<tr>
+											<td colspan="1" class="td2">Nova Friburgo</td>
+											<td colspan="1" class="td2"><a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#openModalBE70370E">rio Grande</a></td>
+
+											
+
+											<td colspan="1" class="td2">Ponte Estrada Dona Mariana </td>
+											<td colspan="1" class="td2"><img src="./Aleta de Cheias - Dados das estações_files/subindo.png" height="30" width="40"></td>
+											<td colspan="1" class="td2">22/12/2020 17:00</td>
+											<td colspan="1" style="background-color: #999999; color:#fff;">Rede básica</td>
+											<td colspan="1" class="td4">0</td>
+											<td colspan="1" class="td4">4.6</td>
+											<td colspan="1" class="td4">4.6</td>
+											<td colspan="1" class="td4">4.8</td>
+											<td colspan="1" class="td4">16.6</td>
+											<td colspan="1" class="td4">-</td>
+											<td colspan="1" class="td5">1.31</td>
+											<td colspan="1" class="td5">1.3</td>
+											<td colspan="1" class="td5">1.3</td>
+											<td colspan="1" class="td5">1.29</td>
+											<td colspan="1" class="td5"><a href="http://alertadecheias.inea.rj.gov.br/alertadecheias/BE70370E20.html"><img src="./Aleta de Cheias - Dados das estações_files/icone_dados.png" height="22px" width"10px"=""> </a></td>
+										</tr>
+										<tr>
+											<td colspan="1" class="td2">São Sebastião do Alto</td>
+											<td colspan="1" class="td2"><a href="http://alertadecheias.inea.rj.gov.br/dados/rio_dois_rios.php#openModalB56647EA">rio Grande</a></td>
+
+											
+
+											<td colspan="1" class="td2">Manuel de Morais </td>
+											<td colspan="1" class="td2"><img src="./Aleta de Cheias - Dados das estações_files/estavel.png" height="30" width="40"></td>
+											<td colspan="1" class="td2">22/12/2020 17:00</td>
+											<td colspan="1" style="background-color: #999999; color:#fff;">Estação conveniada</td>
+											<td colspan="1" class="td4">0</td>
+											<td colspan="1" class="td4">49.6</td>
+											<td colspan="1" class="td4">50.2</td>
+											<td colspan="1" class="td4">50.2</td>
+											<td colspan="1" class="td4">53.8</td>
+											<td colspan="1" class="td4">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5">-</td>
+											<td colspan="1" class="td5"><a href="http://alertadecheias.inea.rj.gov.br/alertadecheias/B56647EA20.html"><img src="./Aleta de Cheias - Dados das estações_files/icone_dados.png" height="22px" width"10px"=""> </a></td>
+										</tr>
+									</tbody></table>
+								</div>
+
+									<script>
+										var Table_Props = {col_0: "select",col_1: "select",col_2: "none",col_3: "none",col_4: "none",col_5: "none",col_6: "none",col_7: "none",col_8: "none",col_9: "none",col_10: "none",col_11: "none",col_12: "none",col_13: "none",col_14: "none",col_15: "none",col_16: "none", display_all_text: " [ Mostrar Todas ] ",sort_select: true};
+										var tf2 = setFilterGrid("Table", Table_Props);
+									</script>
+								</div>
+
+						</div>
+					</div>					
+				</div>
+				</div>
+			</div>
+﻿		<br><br>		<div style="color:white; font-size:14px;margin-left:1%;margin-right:1%;"><center>
+			<p>&nbsp;</p><p>	</p><h2>Quer falar conosco?</h2>
+				<p>(21) 2334-9307 <i class="fa fa-headphones" style="font-size:40px;"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-envelope-o" style="font-size:40px;"></i> alertadecheias@gmail.com</p>
+				<p>Nossa equipe de meteorologistas e técnicos está de plantão 24 horas por dia, todos os dias!<br>
+				<a href="http://www.inea.rj.gov.br/" style="color:white;">Saiba mais sobre o instituto Estadual do Ambiente</a></p><br><br><br>
+		</center></div>
+	</div>
+	
+    <script src="./Aleta de Cheias - Dados das estações_files/bootstrap.min.js(1).download"></script>
+    <script src="./Aleta de Cheias - Dados das estações_files/custom.js(1).download"></script>
+
+
+	        
+          <!-- ínicio plugin de whatsapp -->
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+          <a href="https://wa.me/552225280091?text=%20%20%20%20" style="position:fixed;width:60px;height:60px;bottom:30px;right:10px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow: 1px 1px 2px #888;
+          z-index:1000;" target="_blank">
+          <i style="margin-top:16px" class="fa fa-whatsapp"></i>
+          </a>
+          
+                <!-- fim plugin de whatsapp -->
+
+
+              <!-- ínicio plugin de acessibilidade -->
+              <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+              <div vw class="enabled">
+              <div vw-access-button class="active"></div>
+              <div vw-plugin-wrapper>
+                <div class="vw-plugin-top-wrapper"></div>
+              </div>
+              </div>
+              <script>
+              new window.VLibras.Widget('https://vlibras.gov.br/app');
+              </script>
+          
+          
+          
+              <!-- fim plugin de acessibilidade -->
+
+</body></html>

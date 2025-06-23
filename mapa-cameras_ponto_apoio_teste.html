@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mapa Interativo - Nova Friburgo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #mapa {
+      height: 100vh;
+      width: 100%;
+    }
+    .search-box {
+      position: absolute;
+      top: 200px;
+      left: 25px;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+      .leaflet-popup-content {
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  .search-box {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  background: white;
+  padding: 10px;
+  border-radius: 0 8px 8px 0;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.search-box.collapsed {
+  transform: translateX(-85%);
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 0;
+  right: -30px;
+  background: #007bff;
+  color: white;
+  border-radius: 0 4px 4px 0;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+
+
+  </style>
+</head>
+<body>
+<div class="search-box" id="menuBox">
+  <div class="toggle-btn" onclick="toggleMenu()">⮜</div>
+
+  <label><input type="checkbox" id="checkCamera" checked> Câmeras ao vivo</label><br>
+  <label><input type="checkbox" id="checkApoio" checked> Pontos de apoio</label><br>
+  
+  <label for="raioBusca">Raio (km):</label>
+  <input type="number" id="raioBusca" value="2" min="1" max="50" /><br>
+  
+  <button onclick="buscarProximos()">Buscar</button><br>
+  <button onclick="obterLocalizacaoUsuario()">Usar minha localização</button>
+</div>
+
+
+  <div id="mapa"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const mapa = L.map("mapa").setView([-22.285, -42.531], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap",
+    }).addTo(mapa);
+
+    const apiKey = "1406a60c8d59eca8d3b007e2e83df790";
+
+    const nuvens = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+    const chuva = L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+    const vento = L.tileLayer(`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${apiKey}`);
+
+    const camadas = {
+      "Nuvens": nuvens,
+      "Chuva": chuva,
+      "Vento": vento,
+    };
+
+    L.control.layers(null, camadas).addTo(mapa);
+
+    const iconeCamera = L.icon({
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/149/149060.png",
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32]
+    });
+
+    const iconeApoio = L.icon({
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32]
+    });
+
+    const cameras = [
+       {
+        nome: "Centro - Alto das Braunes",
+        coord: [-22.2880378, -42.5318424],
+        iframe: `<iframe src="https://www.nethorizontes.com.br/flashmediaserver/grooveip01" allowfullscreen height="340" width="400" frameborder="0"></iframe>` 
+      },
+      {
+        nome: "Ponte da Saudade - Rua Vereador José Martins da Costa",
+        coord: [-22.308070, -42.522717],
+        iframe: `<iframe src="https://player.twitch.tv/?channel=rbm_pte&parent=nfci.pmnf.rj.gov.br" height="340" width="400" frameborder="0" allowfullscreen></iframe>`
+      },
+      {
+        nome: "Olaria - Rua Presidente Getúlio Vargas",
+        coord: [-22.305105, -42.540882],
+        iframe: `<iframe src="https://player.twitch.tv/?channel=rbmseg_olaria&parent=nfci.pmnf.rj.gov.br" height="340" width="400" frameborder="0" allowfullscreen></iframe>`
+      },
+      {
+        nome: "Centro - Paissandu - Av. Comte. Bittencourt",
+        coord: [-22.286717, -42.533602],
+        iframe: `<iframe src="https://player.twitch.tv/?channel=rbmseg_paissandu&parent=nfci.pmnf.rj.gov.br" height="340" width="400" frameborder="0" allowfullscreen></iframe>`
+      },
+      {
+        nome: "Centro - Av. Euterpe Friburguense",
+        coord: [-22.277544, -42.533753],
+        iframe: `<iframe src="https://player.twitch.tv/?channel=rbmseg_euterpe&parent=nfci.pmnf.rj.gov.br" height="340" width="400" frameborder="0" allowfullscreen></iframe>`
+      },
+      {
+        nome: "Av. Rui Barbosa",
+        coord: [-22.270881, -42.533057],
+        iframe: `<iframe src="https://player.twitch.tv/?channel=rbmseg&parent=nfci.pmnf.rj.gov.br" height="340" width="400" frameborder="0" allowfullscreen></iframe>`
+      },
+      {
+        nome: "Duas Pedras - Av. Gov. Roberto Silveira",
+        coord: [-22.258614, -42.530943],
+        iframe: `<iframe src="https://player.twitch.tv/?channel=rbmseg2pedras&parent=nfci.pmnf.rj.gov.br" height="340" width="400" frameborder="0" allowfullscreen></iframe>`
+      },
+      {
+        nome: "Chácara do Paraíso - Rua Izelino Maduro (Rotatória)",
+        coord: [-22.2612017,-42.5279018],
+        iframe: `<iframe src="https://player.twitch.tv/?channel=rbmsegcparaiso&parent=nfci.pmnf.rj.gov.br" height="340" width="400" frameborder="0" allowfullscreen></iframe>`
+      }
+        ];
+
+    const pontosApoio = [
+
+        { nome: "Cmei Elza Barbosa Melhorança", coord: [-22.3075440, -42.5350240] },
+        { nome: "Escola Municipal Umbelina Breder De Queiroz", coord: [-22.2389290, -42.5356370] },
+        { nome: "Escola Municipal Francisco Silveira", coord: [-22.2349820, -42.5324640] },
+        { nome: "Paróquia Imaculada Conceição", coord: [-22.2476878, -42.5237873] },
+        { nome: "Cefet – Centro Federal De Educação Tecnológica", coord: [-22.2461018, -42.5235148] },
+        { nome: "Escola Municipal Acyr Spitz", coord: [-22.3477630, -42.3264010] },
+        { nome: "Escola Pastor Schlupp", coord: [-22.2129746, -42.5138698] },
+        { nome: "C.M.E.I Maria Altina N. De Oliveira", coord: [-22.1993700, -42.5040100] },
+        { nome: "Cantinho Feliz", coord: [-22.3403658, -42.5124339] },
+        { nome: "Escola Municipal São Judas Tadeu", coord: [-22.2769030, -42.5050620] },
+        { nome: "Igreja Batista", coord: [-22.2771906, -42.5006039] },
+        { nome: "Sítio Escola Papette", coord: [-22.2783360, -42.4987696] },
+        { nome: "Ginásio Municipal Adhemar F. Combat", coord: [-22.3040491, -42.5463011] },
+        { nome: "Escola Municipal Isabel Gomes Siqueira", coord: [-22.2245930, -42.5121280] },
+        { nome: "Escola Municipal Jamile Constantino Klein", coord: [-22.2943320, -42.5320600] },
+        { nome: "Escola Municipal Dr. Dante Magliano", coord: [-22.3097350, -42.5234250] },
+        { nome: "Escola Estadual Emília Rochmant", coord: [-22.1940263, -42.5125820] },
+        { nome: "Igreja Católica - Paróquia Nossa Senhora Do Rosário", coord: [-22.1967631, -42.5118462] },
+        { nome: "Creche Municipal Izabel Jovelina Monteiro", coord: [-22.2527230, -42.5209700] },
+        { nome: "Escola Municipal Rui Sanglard", coord: [-22.2528760, -42.5206630] },
+        { nome: "Escola Municipal Rei Alberto I", coord: [-22.3337830, -42.6752430] },
+        { nome: "C.M.E.I Iolanda Da Silva", coord: [-22.2443590, -42.5369054] },
+        { nome: "Escola Municipal Waldir Lopes De Carvalho", coord: [-22.3183430, -42.6762820] },
+        { nome: "J.I. Maria Duque Estrada Laginestra", coord: [-22.2349300, -42.5185241] },
+        { nome: "Capela De São Cristóvão", coord: [-22.2539815, -42.5309020] },
+        { nome: "Igreja Batista Nacional Novo Amanhecer", coord: [-22.2335483, -42.5526368] },
+        { nome: "5ª Igreja Batista", coord: [-22.2338270, -42.5521346] },
+        { nome: "Igreja Presbiteriana Esperança", coord: [-22.2363570, -42.5503189] },
+        { nome: "Igreja Católica (Nova Esperança)", coord: [-22.2401329, -42.5492858] },
+        { nome: "Escola Municipal Vitorino Bento De Toledo", coord: [-22.3552630, -42.6349780] },
+        { nome: "Escola Municipal São Pedro Da Serra", coord: [-22.3179410, -42.3306270] },
+        { nome: "Creche Solares II", coord: [-22.2471000, -42.5417260] },
+        { nome: "Galpão Do Mathias", coord: [-22.2403461, -42.5237650] },
+        { nome: "Escola Municipal Flores De Nova Friburgo", coord: [-22.2970400, -42.3988860] },
+        { nome: "Colégio Municipal Juscelino Kubitschek De Oliveira", coord: [-22.2987315, -42.5097911] },
+        { nome: "Fórum Da Comarca De Nova Friburgo", coord: [-22.2731969, -42.5328771] }
+            
+              ];
+
+    const grupoCameras = L.layerGroup();
+    const grupoApoio = L.layerGroup();
+
+    function calcularDistancia(origem, destino) {
+      const R = 6371;
+      const lat1 = origem[0] * Math.PI / 180;
+      const lat2 = destino[0] * Math.PI / 180;
+      const deltaLat = (destino[0] - origem[0]) * Math.PI / 180;
+      const deltaLon = (destino[1] - origem[1]) * Math.PI / 180;
+
+      const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+                Math.cos(lat1) * Math.cos(lat2) *
+                Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    cameras.forEach(item => {
+      const marcador = L.marker(item.coord, { icon: iconeCamera })
+        .bindPopup(`<strong>${item.nome}</strong><br>${item.iframe}`);
+      grupoCameras.addLayer(marcador);
+    });
+    grupoCameras.addTo(mapa);
+
+    pontosApoio.forEach(item => {
+      const marcador = L.marker(item.coord, { icon: iconeApoio })
+        .bindPopup(`<strong>${item.nome}</strong><br><a href="https://www.google.com/maps/dir/?api=1&destination=${item.coord[0]},${item.coord[1]}" target="_blank">Ver rota</a>`);
+      grupoApoio.addLayer(marcador);
+    });
+    grupoApoio.addTo(mapa);
+
+    function buscarProximos() {
+      const raio = parseFloat(document.getElementById("raioBusca").value);
+      const userLoc = mapa.getCenter();
+      const origem = [userLoc.lat, userLoc.lng];
+
+      grupoCameras.clearLayers();
+      grupoApoio.clearLayers();
+
+      if (document.getElementById("checkCamera").checked) {
+        cameras.forEach(item => {
+          if (calcularDistancia(origem, item.coord) <= raio) {
+            const marcador = L.marker(item.coord, { icon: iconeCamera })
+              .bindPopup(`<strong>${item.nome}</strong><br>${item.iframe}`);
+            grupoCameras.addLayer(marcador);
+          }
+        });
+      }
+
+      if (document.getElementById("checkApoio").checked) {
+        pontosApoio.forEach(item => {
+          if (calcularDistancia(origem, item.coord) <= raio) {
+            const marcador = L.marker(item.coord, { icon: iconeApoio })
+              .bindPopup(`<strong>${item.nome}</strong><br><a href="https://www.google.com/maps/dir/?api=1&destination=${item.coord[0]},${item.coord[1]}" target="_blank">Ver rota</a>`);
+            grupoApoio.addLayer(marcador);
+          }
+        });
+      }
+
+      grupoCameras.addTo(mapa);
+      grupoApoio.addTo(mapa);
+    }
+
+    function obterLocalizacaoUsuario() {
+  if (!navigator.geolocation) {
+    alert("Geolocalização não é suportada pelo seu navegador.");
+    return;
+  }
+  
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude, longitude } = pos.coords;
+      const localUsuario = [latitude, longitude];
+
+      // Adiciona marcador da localização do usuário
+      const marcadorUsuario = L.circleMarker(localUsuario, {
+        radius: 8,
+        fillColor: "blue",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      }).addTo(mapa).bindPopup("Você está aqui").openPopup();
+
+      mapa.setView(localUsuario, 15);
+
+      // Ordena os pontos de apoio pela distância
+      const apoioOrdenado = pontosApoio
+        .map(p => ({
+          ...p,
+          distancia: calcularDistancia(localUsuario, p.coord)
+        }))
+        .sort((a, b) => a.distancia - b.distancia)
+        .slice(0, 4); // pega os 4 mais próximos
+
+      grupoApoio.clearLayers();
+
+      apoioOrdenado.forEach(item => {
+        const marcador = L.marker(item.coord, { icon: iconeApoio })
+          .bindPopup(`<strong>${item.nome}</strong><br><a href="https://www.google.com/maps/dir/?api=1&destination=${item.coord[0]},${item.coord[1]}" target="_blank">Ver rota</a>`);
+        grupoApoio.addLayer(marcador);
+      });
+
+      grupoApoio.addTo(mapa);
+    },
+    (erro) => {
+      alert("Não foi possível obter sua localização.");
+      console.error(erro);
+    }
+  );
+}
+
+function toggleMenu() {
+  const menuBox = document.getElementById("menuBox");
+  const toggleBtn = menuBox.querySelector(".toggle-btn");
+
+  menuBox.classList.toggle("collapsed");
+  toggleBtn.innerText = menuBox.classList.contains("collapsed") ? "⮞ MENU" : "⮜";
+}
+
+  </script>
+</body>
+</html>
